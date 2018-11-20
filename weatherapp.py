@@ -57,10 +57,10 @@ rp5_page = urlopen(rp5_request).read()
 rp5_content = rp5_page.decode('utf-8')
 
 # Getting temperature from rp5.ua
-WINFO_CONTAINER_TAG = '<div id="ArchTemp">'
+RP5_TEMP_CONTAINER_TAG = '<div id="ArchTemp">'
 RP5_TEMP_TAG = '<span class="t_0" style="display: block;">'
 rp5_temp_tag = rp5_content.find(RP5_TEMP_TAG,
-                                rp5_content.find(WINFO_CONTAINER_TAG))
+                                rp5_content.find(RP5_TEMP_CONTAINER_TAG))
 
 rp5_temp_tag_size = len(RP5_TEMP_TAG)
 rp5_temp_tag_start = rp5_temp_tag + rp5_temp_tag_size
@@ -71,6 +71,22 @@ for char in rp5_content[rp5_temp_tag_start:]:
     else:
         break
 
+# Getting weather conditions from the rp5.ua
+RP5_COND_CONTAINER_TAG = '<div class="ArchiveInfo">'
+RP5_COND_TAG = '°F</span>, '
+rp5_cond_tag = rp5_content.find(RP5_COND_TAG,
+                                rp5_content.find(RP5_COND_CONTAINER_TAG))
+
+rp5_cond_tag_size = len(RP5_COND_TAG)
+rp5_cond_tag_start = rp5_cond_tag + rp5_cond_tag_size
+rp5_cond = ""
+for char in rp5_content[rp5_cond_tag_start:]:
+    if char != ',':
+        rp5_cond += char
+    else:
+        break
+
+
 print('Weather in Dnipro from RP5:')
 print(f'Temperature: {html.unescape(rp5_temp)}')
-# print(f'Weather conditions: {html.unescape(accu_cond)}\n')
+print(f'Weather conditions: {html.unescape(rp5_cond)}\n')
