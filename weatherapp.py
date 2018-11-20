@@ -86,7 +86,6 @@ for char in rp5_content[rp5_cond_tag_start:]:
     else:
         break
 
-
 print('Weather in Dnipro from RP5:')
 print(f'Temperature: {html.unescape(rp5_temp)}')
 print(f'Weather conditions: {html.unescape(rp5_cond)}\n')
