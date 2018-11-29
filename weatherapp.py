@@ -25,7 +25,6 @@ def get_request_headers():
 def get_page_source(url):
     """ Returns the contents of the page at the specified URL
     """
-
     request = Request(url, headers=get_request_headers())
     page_source = urlopen(request).read()
     return page_source.decode('utf-8')
@@ -64,6 +63,7 @@ def get_weather_info(page_content, tags):
 def produce_output(provider_name, temp, condition):
     """ Output of the received data
     """
+
     temp_utf = html.unescape(temp)
     len_pname = len(provider_name)
     len_temp = len(temp_utf)
@@ -74,6 +74,7 @@ def produce_output(provider_name, temp, condition):
     len_sp_temp1 = ((len_cond - len_temp + 2) // 2)
     len_sp_temp2 = (len_cond + 2) - len_sp_temp1 - len_temp
 
+    print('\nWeather in Dnipro from:')
     print(f'+{"-" * len_sheet}+')
     print(f'|{" " * len_sp_pname1}{provider_name}{" " * len_sp_pname2}|')
     print(f'+{"-" * len_sheet}+')
@@ -86,6 +87,7 @@ def produce_output(provider_name, temp, condition):
 def main():
     """ Main entry point.
     """
+    
     weather_sites = {
         "AccuWeather": (ACCU_URL, ACCU_TAGS),
         "RP5": (RP5_URL, RP5_TAGS)
