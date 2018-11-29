@@ -14,8 +14,9 @@ RP5_URL = (
     'http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%94%D0'
     '%BD%D1%96%D0%BF%D1%80%D1%96_(%D0%94%D0%BD%D1%96%D0%BF%D1%80%D0%BE'
     '%D0%BF%D0%B5%D1%82%D1%80%D0%BE%D0%B2%D1%81%D1%8C%D0%BA%D1%83)')
-RP5_TAGS = ('<span class="t_0" style="display: block;">', 
+RP5_TAGS = ('<span class="t_0" style="display: block;">',
             ('<div class="ArchiveInfo">', '°F</span>, '))
+
 
 def get_request_headers():
     return {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64)'}
@@ -63,10 +64,23 @@ def get_weather_info(page_content, tags):
 def produce_output(provider_name, temp, condition):
     """ Output of the received data
     """
+    temp_utf = html.unescape(temp)
+    len_pname = len(provider_name)
+    len_temp = len(temp_utf)
+    len_cond = len(condition)
+    len_sheet = len_cond + 17
+    len_sp_pname1 = ((len_sheet - len_pname + 2) // 2)
+    len_sp_pname2 = (len_sheet) - len_sp_pname1 - len_pname
+    len_sp_temp1 = ((len_cond - len_temp + 2) // 2)
+    len_sp_temp2 = (len_cond + 2) - len_sp_temp1 - len_temp
 
-    print(f'\n{provider_name}:\n')
-    print(f'Temperature: {html.unescape(temp)}')
-    print(f'Weather conditions: {condition}\n')
+    print(f'+{"-" * len_sheet}+')
+    print(f'|{" " * len_sp_pname1}{provider_name}{" " * len_sp_pname2}|')
+    print(f'+{"-" * len_sheet}+')
+    print(f'| Temperature: |{" "*len_sp_temp1}{temp_utf}{" "*len_sp_temp2}|')
+    print(f'+{"-" * len_sheet}+')
+    print(f'| Сonditions:  | {condition} |')
+    print(f'+{"-" * len_sheet}+')
 
 
 def main():
