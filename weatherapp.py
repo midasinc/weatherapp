@@ -2,7 +2,9 @@
 """
 Weather app project.
 """
+import sys
 import html
+import argparse
 from urllib.request import urlopen, Request
 
 # URL and tags for current weather in the city of Dnipro on Accuweather site
@@ -84,14 +86,31 @@ def produce_output(provider_name, temp, condition):
     print(f'+{"-" * len_sheet}+')
 
 
-def main():
+def main(argv):
     """ Main entry point.
     """
-    
+    KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5'}
+    parser = argparse.ArgumentParser()
+    parser.add_argument('command', help ='Service name', nargs=1)
+    params = parser.parse_args(argv)
+
+
     weather_sites = {
         "AccuWeather": (ACCU_URL, ACCU_TAGS),
         "RP5": (RP5_URL, RP5_TAGS)
     }
+
+    if params.command:
+        command = params.command[0]
+        if command in KNOWN_COMMANDS:
+            weather_sites = {
+                KNOWN_COMMANDS[command]: weather_sites[KNOWN_COMMANDS[command]]
+            }
+        else:
+            print("Unknown command provided!")
+            sys.exit(1)
+
+
 
     for name in weather_sites:
         url, tags = weather_sites[name]
@@ -101,4 +120,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
