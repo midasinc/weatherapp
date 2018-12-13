@@ -33,35 +33,12 @@ def get_page_source(url):
     return page_source.decode('utf-8')
 
 
-def get_tag_content(page_content, tag):
-    """ Search for relevant information in the content page
-    """
-    if type(tag) == tuple:
-        tag_index = page_content.find(tag[1], page_content.find(tag[0]))
-        tag_size = len(tag[1])
-        stop = ','
-    else:
-        tag_index = page_content.find(tag)
-        tag_size = len(tag)
-        stop = '<'
-    value_start = tag_index + tag_size
-
-    content = ''
-    for c in page_content[value_start:]:
-        if c != stop:
-            content += c
-        else:
-            break
-    return content
-
-
 def get_weather_info(page_content):
     """ Obtaining the required data from the received content and 
         specify the tags
     """
     city_page = BeautifulSoup(page_content, 'html.parser')
-    current_day_section = city_page.find(
-        'li', class_='night current first cl')
+    current_day_section = city_page.find('li', class_='night current first cl')
 
     weather_info = {}
     if current_day_section:
@@ -98,25 +75,6 @@ def produce_output(info):
     for key, value in info.items():
         print(f'{key}: {html.unescape(value)}')
 
-    # temp_utf = html.unescape(temp)
-    # len_pname = len(provider_name)
-    # len_temp = len(temp_utf)
-    # len_cond = len(condition)
-    # len_sheet = len_cond + 17
-    # len_sp_pname1 = ((len_sheet - len_pname + 2) // 2)
-    # len_sp_pname2 = (len_sheet) - len_sp_pname1 - len_pname
-    # len_sp_temp1 = ((len_cond - len_temp + 2) // 2)
-    # len_sp_temp2 = (len_cond + 2) - len_sp_temp1 - len_temp
-
-    # print('\nWeather in Dnipro from:')
-    # print(f'+{"-" * len_sheet}+')
-    # print(f'|{" " * len_sp_pname1}{provider_name}{" " * len_sp_pname2}|')
-    # print(f'+{"-" * len_sheet}+')
-    # print(f'| Temperature: |{" "*len_sp_temp1}{temp_utf}{" "*len_sp_temp2}|')
-    # print(f'+{"-" * len_sheet}+')
-    # print(f'| Сonditions:  | {condition} |')
-    # print(f'+{"-" * len_sheet}+')
-
 
 def main(argv):
     """ Main entry point.
@@ -125,9 +83,8 @@ def main(argv):
     # Adding and parsing arguments
     KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5'}
     parser = argparse.ArgumentParser()
-    parser.add_argument('command', help ='Service name', nargs=1)
+    parser.add_argument('command', help='Service name', nargs=1)
     params = parser.parse_args(argv)
-
 
     weather_sites = {
         "AccuWeather": (ACCU_URL, ACCU_TAGS),
@@ -143,8 +100,6 @@ def main(argv):
         else:
             print("Unknown command provided!")
             sys.exit(1)
-
-
 
     for name in weather_sites:
         url, tags = weather_sites[name]
