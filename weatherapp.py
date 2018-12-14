@@ -67,11 +67,11 @@ def get_weather_info(page_content):
     return weather_info
 
 
-def produce_output(info):
+def produce_output(name, info):
     """ Output of the received data
     """
 
-    print('Accu Weather: \n')
+    print(f'{name}: \n')
     for key, value in info.items():
         print(f'{key}: {html.unescape(value)}')
 
@@ -81,7 +81,7 @@ def main(argv):
     """
 
     # Adding and parsing arguments
-    KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5'}
+    KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5', 'sin': "Sinoptik"}
     parser = argparse.ArgumentParser()
     parser.add_argument('command', help='Service name', nargs=1)
     params = parser.parse_args(argv)
@@ -90,7 +90,6 @@ def main(argv):
         "AccuWeather": (ACCU_URL, ACCU_TAGS),
         "RP5": (RP5_URL, RP5_TAGS)
     }
-
     if params.command:
         command = params.command[0]
         if command in KNOWN_COMMANDS:
@@ -104,7 +103,7 @@ def main(argv):
     for name in weather_sites:
         url, tags = weather_sites[name]
         content = get_page_source(url)
-        produce_output(get_weather_info(content))
+        produce_output(name, get_weather_info(content))
 
 
 if __name__ == '__main__':
