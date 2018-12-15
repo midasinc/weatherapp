@@ -5,6 +5,7 @@ Weather app project.
 import sys
 import html
 import argparse
+import html.parser
 from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
 
@@ -37,7 +38,8 @@ def get_weather_info(page_content):
     """ Obtaining the required data from the received content and 
         specify the tags
     """
-    city_page = BeautifulSoup(page_content, 'html.parser')
+    city_page = BeautifulSoup(page_content, "html.parser")
+    
     current_day_section = city_page.find('li', class_='night current first cl')
 
     weather_info = {}
@@ -47,7 +49,7 @@ def get_weather_info(page_content):
             current_day_page = get_page_source(current_day_url)
             if current_day_page:
                 current_day = \
-                    BeautifulSoup(current_day_page, 'html.parser')
+                    BeautifulSoup(current_day_page, "html.parser")
                 weather_details = \
                     current_day.find('div', attrs={'id': 'detail-now'})
                 condition = weather_details.find('span', class_='cond')
