@@ -75,8 +75,8 @@ def get_weather_info(command, page_content):
         """ Getting data about the current weather for RP5    
         """
 
-        current_day_section = city_page.find(
-            'div', attrs={'id': 'archiveString'})
+        current_day_section = \
+            city_page.find('div', attrs={'id': 'archiveString'})
 
         weather_info_rp5 = {}
         condition = \
