@@ -9,7 +9,8 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
 
 # URL and tags for current weather in the city of Dnipro on Accuweather site
-ACCU_URL = "https://www.accuweather.com/uk/ua/dnipro/322722/weather-forecast/322722"
+ACCU_URL = (
+    "https://www.accuweather.com/uk/ua/dnipro/322722/weather-forecast/322722")
 ACCU_TAGS = ('<span class="large-temp">', '<span class="cond">')
 
 # URL and tags for current weather in the city of Dnipro on RP5 site
@@ -36,13 +37,15 @@ def get_page_source(url):
 def get_weather_info(command, page_content):
     """ Receiving the current weather data
     """
+
     def get_weather_info_accu(city_page):
-        """ TODO: Получение данных о текущей погоде для AccuWeather    
+        """ Getting data about the current weather for AccuWeather    
         """
-        
-        current_day_section = city_page.find('li', class_='day current first cl')
+        current_day_section = \
+            city_page.find('li', class_='day current first cl')
         if current_day_section == None:
-            current_day_section = city_page.find('li', class_='night current first cl')
+            current_day_section = \
+                city_page.find('li', class_='night current first cl')
 
         weather_info_accu = {}
         current_day_url = current_day_section.find('a').attrs['href']
@@ -62,20 +65,53 @@ def get_weather_info(command, page_content):
                 feal_temp = weather_details.find('span', class_='small-temp')
                 if feal_temp:
                     weather_info_accu['feal_temp'] = feal_temp.text
-
                 wind_info = weather_details.find_all('li', class_='wind')
                 if wind_info:
                     weather_info_accu['wind'] = \
                         ' '.join(map(lambda t: t.text.strip(), wind_info))
         return weather_info_accu
 
+    def get_weather_info_rp5(city_page):
+        """ Getting data about the current weather for RP5    
+        """
+
+        current_day_section = city_page.find(
+            'div', attrs={'id': 'archiveString'})
+
+        weather_info_rp5 = {}
+        condition = \
+            str(current_day_section.find('span', class_='wv_0').previous)
+        if condition:
+            condition = condition.split(', ')
+            weather_info_rp5['cond'] = condition[1]
+        temp = current_day_section.find('span', class_='t_0')
+        if temp:
+            weather_info_rp5['temp'] = temp.text
+        feal_temp = current_day_section.find('div', class_='TempStr')
+        if feal_temp:
+            weather_info_rp5['feal_temp'] = feal_temp.text
+        wind_info_section = str(
+            current_day_section.find('div',
+                                     class_='ArchiveInfo').text).split(', ')
+        wind_velocity = \
+            str(current_day_section.find('span', class_='wv_1'
+                                        ).text).replace('(','').replace(')','')
+        wind_direction = wind_info_section[5]
+        if wind_velocity and wind_direction:
+            weather_info_rp5['wind'] = \
+                'Вітер' + wind_velocity + ', ' + wind_direction
+
+        return weather_info_rp5
 
     city_page = BeautifulSoup(page_content, "lxml")
     weather_info = {}
     if command == 'accu':
         weather_info = get_weather_info_accu(city_page)
-    
+    if command == 'rp5':
+        weather_info = get_weather_info_rp5(city_page)
+
     return weather_info
+
 
 def produce_output(name, info):
     """ Output of the received data
@@ -95,7 +131,7 @@ def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('command', help='Service name', nargs=1)
     params = parser.parse_args(argv)
-    
+
     weather_sites = {
         "AccuWeather": (ACCU_URL, ACCU_TAGS),
         "RP5": (RP5_URL, RP5_TAGS)
