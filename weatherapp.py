@@ -50,6 +50,14 @@ def get_locations(locations_url):
         locations.append((location, url))
     return locations
 
+def save_configuration(name, url):
+    """ Save configuration to file
+    """
+    parser = configparser.ConfigParser()
+    parser[CONFIG_LOCATION] = {'name': name, 'url': url}
+    with open(get_configuration_file(), 'w') as configfile:
+        parser.write(configfile)
+
 def configurate():
     """Creating a configuration 
      """
