@@ -58,6 +58,21 @@ def get_configuration_file():
     """
     return Path.home() / CONFIG_FILE
 
+def get_configuration():
+    """ Get configuration from file
+    """
+    name = DEFAULT_NAME
+    url = DEFAULT_URL
+
+    parser = configparser.ConfigParser()
+    parser.read(get_configuration_file())
+
+    config = parser[CONFIG_LOCATION]
+    name, url = config['name'], config['url']
+
+    return name, url
+
+
 def save_configuration(name, url):
     """ Save configuration to file
     """
