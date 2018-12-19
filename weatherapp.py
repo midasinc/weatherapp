@@ -35,6 +35,20 @@ def get_page_source(url):
     page_source = urlopen(request).read()
     return page_source.decode('utf-8')
 
+def get_locations(locations_url):
+    """Getting a list of cities 
+     """
+    locations_page = get_page_source(locations_url)
+    soup = BeautifulSoup(locations_page, 'lxml')
+
+    locations = []
+    for location in soup.find_all('li', attr={'class': 'drilldown cl'}):
+        url = location.find('a').attrs[href]
+        location = location.find('em').text
+        locations.append((location, url))
+    return locations
+
+
 
 def get_weather_info(command, page_content):
     """ Receiving the current weather data
