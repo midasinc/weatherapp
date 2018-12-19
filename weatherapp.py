@@ -66,9 +66,9 @@ def get_configuration():
 
     parser = configparser.ConfigParser()
     parser.read(get_configuration_file())
-
-    config = parser[CONFIG_LOCATION]
-    name, url = config['name'], config['url']
+    if CONFIG_LOCATION in parser.sections():
+        config = parser[CONFIG_LOCATION]
+        name, url = config['name'], config['url']
 
     return name, url
 
