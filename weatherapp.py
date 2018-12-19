@@ -22,8 +22,11 @@ RP5_URL = (
     '%D0%BF%D0%B5%D1%82%D1%80%D0%BE%D0%B2%D1%81%D1%8C%D0%BA%D1%83)')
 RP5_TAGS = ('<span class="t_0" style="display: block;">',
             ('<div class="ArchiveInfo">', '°F</span>, '))
-
+DEFAULT_NAME = 'Kyiv'
+DEFAULT_URL = 'https://www.accuweather.com/uk/ua/kyiv/324505/weather-forecast/324505'
 ACCU_BROWSE_LOCATIONS = 'https://www.accuweather.com/uk/browse-locations'
+CONFIG_LOCATION = 'Location'
+CONFIG_FILE = 'weatherapp.ini'
 
 
 def get_request_headers():
@@ -49,6 +52,11 @@ def get_locations(locations_url):
         location = location.find('em').text
         locations.append((location, url))
     return locations
+
+def get_configuration_file():
+    """ Getting the path to the configuration file
+    """
+    return Path.home() / CONFIG_FILE
 
 def save_configuration(name, url):
     """ Save configuration to file
