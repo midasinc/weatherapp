@@ -23,6 +23,8 @@ RP5_URL = (
 RP5_TAGS = ('<span class="t_0" style="display: block;">',
             ('<div class="ArchiveInfo">', '°F</span>, '))
 
+ACCU_BROWSE_LOCATIONS = 'https://www.accuweather.com/uk/browse-locations'
+
 
 def get_request_headers():
     return {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64)'}
@@ -43,12 +45,23 @@ def get_locations(locations_url):
 
     locations = []
     for location in soup.find_all('li', attr={'class': 'drilldown cl'}):
-        url = location.find('a').attrs[href]
+        url = location.find('a').attrs['href']
         location = location.find('em').text
         locations.append((location, url))
     return locations
 
+def configurate():
+    """Creating a configuration 
+     """
+    locations = get_locations(ACCU_BROWSE_LOCATIONS)
+    while locations:
+        for index, location in enumerate(locations):
+            print(f'{index + 1}, {location[0]}')
+        selected_index = int(input('Please select location: '))
+        location = locations[selected_index - 1]
+        locations = get_locations(location[1])
 
+    save_configuration(*location)
 
 def get_weather_info(command, page_content):
     """ Receiving the current weather data
