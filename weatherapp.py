@@ -1,10 +1,12 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 """
 Weather app project.
 """
 import sys
 import html
 import argparse
+import configparser
+from pathlib import Path
 from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
 
