@@ -181,13 +181,24 @@ def produce_output(name, info):
     for key, value in info.items():
         print(f'{key}: {html.unescape(value)}')
 
+def get_accu_weather_info():
+    """  
+    Getting the name of the city and URL from the configuration file.
+    Getting information about the weather for the city.
+    Conclusion weather conditions for a specified city.
+    """
+    city_name, city_url = get_configuration()
+    content = get_page_source(city_url)
+    produce_output(city_name, get_weather_info(content))
 
 def main(argv):
     """ Main entry point.
     """
 
     # Adding and parsing arguments
-    KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5', 'sin': "Sinoptik"}
+    KNOWN_COMMANDS = {'accu': get_accu_weather_info,
+                        'config': configurate}
+    # KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5', 'sin': "Sinoptik"}
     parser = argparse.ArgumentParser()
     parser.add_argument('command', help='Service name', nargs=1)
     params = parser.parse_args(argv)
