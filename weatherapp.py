@@ -47,7 +47,7 @@ def get_locations(locations_url):
     soup = BeautifulSoup(locations_page, 'lxml')
 
     locations = []
-    for location in soup.find_all('li', attr={'class': 'drilldown cl'}):
+    for location in soup.find_all('li', {'class': 'drilldown cl'}):
         url = location.find('a').attrs['href']
         location = location.find('em').text
         locations.append((location, url))
@@ -189,7 +189,7 @@ def get_accu_weather_info():
     """
     city_name, city_url = get_configuration()
     content = get_page_source(city_url)
-    produce_output(city_name, get_weather_info(content))
+    produce_output(city_name, get_weather_info("accu", content)) #FIXME:  - исправить "accu" на универсальную команду
 
 def main(argv):
     """ Main entry point.
