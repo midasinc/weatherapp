@@ -182,10 +182,9 @@ def produce_output(name, info):
         print(f'{key}: {html.unescape(value)}')
 
 def get_accu_weather_info():
-    """  
-    Getting the name of the city and URL from the configuration file.
-    Getting information about the weather for the city.
-    Conclusion weather conditions for a specified city.
+    """ Getting the name of the city and URL from the configuration file.
+        Getting information about the weather for the city.
+        Output weather conditions for a specified city.
     """
     city_name, city_url = get_configuration()
     content = get_page_source(city_url)
@@ -199,27 +198,18 @@ def main(argv):
     KNOWN_COMMANDS = {'accu': get_accu_weather_info,
                         'config': configurate}
     # KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5', 'sin': "Sinoptik"}
+    
     parser = argparse.ArgumentParser()
     parser.add_argument('command', help='Service name', nargs=1)
     params = parser.parse_args(argv)
 
-    weather_sites = {
-        "AccuWeather": (ACCU_URL, ACCU_TAGS),
-        "RP5": (RP5_URL, RP5_TAGS)
-    }
     if params.command:
         command = params.command[0]
         if command in KNOWN_COMMANDS:
-            weather_sites = {
-                KNOWN_COMMANDS[command]: weather_sites[KNOWN_COMMANDS[command]]
-            }
+            KNOWN_COMMANDS[command]()
         else:
             print("Unknown command provided!")
             sys.exit(1)
-    for name in weather_sites:
-        url, tags = weather_sites[name]
-        content = get_page_source(url)
-        produce_output(name, get_weather_info(command, content))
 
 
 if __name__ == '__main__':
