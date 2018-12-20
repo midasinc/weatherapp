@@ -173,11 +173,12 @@ def get_weather_info(command, page_content):
     return weather_info
 
 
-def produce_output(name, info):
+def produce_output(city_name, info):
     """ Output of the received data
     """
-
-    print(f'{name}: \n')
+    print('Accu Weather: \n')
+    print(f'{city_name}')
+    print('-'*20)
     for key, value in info.items():
         print(f'{key}: {html.unescape(value)}')
 
