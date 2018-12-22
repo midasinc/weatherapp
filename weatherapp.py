@@ -94,6 +94,9 @@ def configurate():
 
     save_configuration(*location)
 
+def save_weather_info():
+    pass
+
 def get_weather_info(command, page_content):
     """ Receiving the current weather data
     """
@@ -197,11 +200,13 @@ def main(argv):
 
     # Adding and parsing arguments
     KNOWN_COMMANDS = {'accu': get_accu_weather_info,
-                        'config': configurate}
+                        'config': configurate,
+                        's': save_weather_info }
     # KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5', 'sin': "Sinoptik"}
     
     parser = argparse.ArgumentParser()
     parser.add_argument('command', help='Service name', nargs=1)
+    parser.add_argument('command2', help='Save weather info to file', nargs='?')
     params = parser.parse_args(argv)
 
     if params.command:
