@@ -95,7 +95,17 @@ def configurate():
     save_configuration(*location)
 
 def save_weather_info():
-    pass
+        #TODO: доработать функцию
+
+    """ Saving weather forecast to file
+    """
+    
+    path_to_wapp = Path(__file__).parent
+    with open(path_to_wapp / 'weather.txt', 'w') as f:
+        f.write('some text here')
+        print('\nFile weather.txt has been saved to:\n')
+        print(path_to_wapp)
+
 
 def get_weather_info(command, page_content):
     """ Receiving the current weather data
