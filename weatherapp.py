@@ -226,7 +226,13 @@ def main(argv):
         else:
             print("Unknown command provided!")
             sys.exit(1)
-
+    if params.command2:
+        command2 = params.command2[0]
+        if command2 in KNOWN_COMMANDS:
+            KNOWN_COMMANDS[command2]()
+        else:
+            print("Unknown command provided!")
+            sys.exit(1)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
