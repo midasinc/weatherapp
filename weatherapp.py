@@ -40,9 +40,10 @@ def get_page_source(url):
     page_source = urlopen(request).read()
     return page_source.decode('utf-8')
 
+
 def get_locations(locations_url):
     """Getting a list of cities 
-     """
+    """
     locations_page = get_page_source(locations_url)
     soup = BeautifulSoup(locations_page, 'lxml')
 
@@ -53,10 +54,12 @@ def get_locations(locations_url):
         locations.append((location, url))
     return locations
 
+
 def get_configuration_file():
     """ Getting the path to the configuration file
     """
     return Path.home() / CONFIG_FILE
+
 
 def get_configuration():
     """ Get configuration from file
@@ -81,9 +84,10 @@ def save_configuration(name, url):
     with open(get_configuration_file(), 'w') as configfile:
         parser.write(configfile)
 
+
 def configurate():
     """Creating a configuration 
-     """
+    """
     locations = get_locations(ACCU_BROWSE_LOCATIONS)
     while locations:
         for index, location in enumerate(locations):
@@ -94,9 +98,9 @@ def configurate():
 
     save_configuration(*location)
 
-def save_weather_info():
-        #TODO: доработать функцию
 
+def save_weather_info():
+    #TODO: доработать функцию
     """ Saving weather forecast to file
     """
     path_to_wapp = Path.cwd()
@@ -190,9 +194,10 @@ def produce_output(city_name, info):
     """
     print('Accu Weather: \n')
     print(f'{city_name}')
-    print('-'*20)
+    print('-' * 20)
     for key, value in info.items():
         print(f'{key}: {html.unescape(value)}')
+
 
 def get_accu_weather_info():
     """ Getting the name of the city and URL from the configuration file.
@@ -201,21 +206,26 @@ def get_accu_weather_info():
     """
     city_name, city_url = get_configuration()
     content = get_page_source(city_url)
-    produce_output(city_name, get_weather_info("accu", content)) #FIXME:  - исправить "accu" на универсальную команду
+    produce_output(city_name, get_weather_info(
+        "accu", content))  #FIXME:  - исправить "accu" на универсальную команду
+
 
 def main(argv):
     """ Main entry point.
     """
 
     # Adding and parsing arguments
-    KNOWN_COMMANDS = {'accu': get_accu_weather_info,
-                        'config': configurate,
-                        's': save_weather_info }
+    KNOWN_COMMANDS = {
+        'accu': get_accu_weather_info,
+        'config': configurate,
+        's': save_weather_info
+    }
     # KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5', 'sin': "Sinoptik"}
-    
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('command', help='Service name', nargs=1)
-    parser.add_argument('command2', help='Save weather info to file', nargs='?')
+    parser.add_argument('command', help='Short name of provider', nargs=1)
+    parser.add_argument(
+        'command2', help='Save weather info to file', nargs='?')
     params = parser.parse_args(argv)
 
     if params.command:
@@ -232,6 +242,7 @@ def main(argv):
         else:
             print("Unknown command provided!")
             sys.exit(1)
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
