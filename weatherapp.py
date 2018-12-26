@@ -14,6 +14,7 @@ from urllib.request import urlopen, Request
 ACCU_URL = (
     "https://www.accuweather.com/uk/ua/dnipro/322722/weather-forecast/322722")
 ACCU_TAGS = ('<span class="large-temp">', '<span class="cond">')
+ACCU_BROWSE_LOCATIONS = 'https://www.accuweather.com/uk/browse-locations'
 
 # URL and tags for current weather in the city of Dnipro on RP5 site
 RP5_URL = (
@@ -24,7 +25,6 @@ RP5_TAGS = ('<span class="t_0" style="display: block;">',
             ('<div class="ArchiveInfo">', '°F</span>, '))
 DEFAULT_NAME = 'Kyiv'
 DEFAULT_URL = 'https://www.accuweather.com/uk/ua/kyiv/324505/weather-forecast/324505'
-ACCU_BROWSE_LOCATIONS = 'https://www.accuweather.com/uk/browse-locations'
 CONFIG_LOCATION = 'Location'
 CONFIG_FILE = 'weatherapp.ini'
 
@@ -86,7 +86,7 @@ def save_configuration(name, url):
 
 
 def configurate():
-    """Creating a configuration 
+    """Creating a configuration
     """
     locations = get_locations(ACCU_BROWSE_LOCATIONS)
     while locations:
@@ -103,11 +103,12 @@ def save_weather_info():
     #TODO: доработать функцию
     """ Saving weather forecast to file
     """
-    path_to_wapp = Path.cwd()
-    with open(path_to_wapp / 'weather.txt', 'w') as f:
-        f.write('some text here')
-        print('\nFile weather.txt has been saved to:\n')
-        print(path_to_wapp)
+
+    city_name, city_url = get_configuration()
+    content = get_page_source(city_url)
+    save_accu_weather(city_name, get_weather_info(
+        "accu", content))
+
 
 
 def get_weather_info(command, page_content):
@@ -207,7 +208,7 @@ def get_accu_weather_info():
     city_name, city_url = get_configuration()
     content = get_page_source(city_url)
     produce_output(city_name, get_weather_info(
-        "accu", content))  #FIXME:  - исправить "accu" на универсальную команду
+        "accu", content))
 
 
 def main(argv):
