@@ -109,7 +109,18 @@ def save_weather_info():
     save_accu_weather(city_name, get_weather_info(
         "accu", content))
 
-
+def save_accu_weather(city_name, info):
+    """ Save the weather forecast from Accuweather to a file
+    """
+    path_to_wapp = Path.cwd()
+    with open(path_to_wapp / 'weather.txt', 'w') as f:
+        f.write('Provider: Accu Weather\n')
+        f.write('-'*20)
+        f.write(f'\nCity: {city_name}')
+        for key, value in info.items():
+           f.write(f'\n{key}: {html.unescape(value)}')
+        print('\nFile weather.txt has been saved to:')
+        print(path_to_wapp)
 
 def get_weather_info(command, page_content):
     """ Receiving the current weather data
