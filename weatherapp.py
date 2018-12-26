@@ -232,6 +232,10 @@ def get_accu_weather_info():
     content = get_page_source(city_url)
     produce_output(city_name, get_weather_info("accu", content))
 
+def get_rp5_weather_info():
+    pass
+    
+
 
 def main(argv):
     """ Main entry point.
@@ -240,6 +244,7 @@ def main(argv):
     # Adding and parsing arguments
     KNOWN_COMMANDS = {
         'accu': get_accu_weather_info,
+        'rp5': get_rp5_weather_info,
         'config': configurate,
         's': save_weather_info
     }
