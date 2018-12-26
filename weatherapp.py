@@ -6,13 +6,13 @@ This module takes three arguments: `accu`, 'config' and `s`.
 
 Arguments:
 ----------
-accu - сalling weather from the provider
+accu - сalling weather from the provider AccuWeather
     
-config - Configuring the module for displaying weather for a given city.
+config - configuring the module for displaying weather for a given city
 
 Optional arguments:
 ------------------
-s - Save weather to file.  
+s - save weather to file 
 """
 import sys
 import html
