@@ -224,7 +224,8 @@ def produce_output(city_name, info):
 
 
 def get_accu_weather_info():
-    """ Getting the name of the city and URL from the configuration file.
+    """ For provider AccuWeather
+        Getting the name of the city and URL from the configuration file.
         Getting information about the weather for the city.
         Output weather conditions for a specified city.
     """
@@ -232,10 +233,16 @@ def get_accu_weather_info():
     content = get_page_source(city_url)
     produce_output(city_name, get_weather_info("accu", content))
 
-def get_rp5_weather_info():
-    pass
-    
-
+def get_rp5_weather_info(provider):
+    """ For provider AccuWeather
+    Getting the name of the city and URL from the configuration file.
+    Getting information about the weather for the city.
+    Output weather conditions for a specified city.
+    """
+    import pdb; pdb.set_trace()
+    city_name, city_url = get_configuration()
+    content = get_page_source(city_url)
+    produce_output(city_name, get_weather_info("rp5", content))
 
 def main(argv):
     """ Main entry point.
