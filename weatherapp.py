@@ -100,14 +100,13 @@ def configurate():
 
 
 def save_weather_info():
-    #TODO: доработать функцию
     """ Saving weather forecast to file
     """
 
     city_name, city_url = get_configuration()
     content = get_page_source(city_url)
-    save_accu_weather(city_name, get_weather_info(
-        "accu", content))
+    save_accu_weather(city_name, get_weather_info("accu", content))
+
 
 def save_accu_weather(city_name, info):
     """ Save the weather forecast from Accuweather to a file
@@ -115,12 +114,13 @@ def save_accu_weather(city_name, info):
     path_to_wapp = Path.cwd()
     with open(path_to_wapp / 'weather.txt', 'w') as f:
         f.write('Provider: Accu Weather\n')
-        f.write('-'*20)
+        f.write('-' * 20)
         f.write(f'\nCity: {city_name}')
         for key, value in info.items():
-           f.write(f'\n{key}: {html.unescape(value)}')
+            f.write(f'\n{key}: {html.unescape(value)}')
         print('\nFile weather.txt has been saved to:')
         print(path_to_wapp)
+
 
 def get_weather_info(command, page_content):
     """ Receiving the current weather data
@@ -218,8 +218,7 @@ def get_accu_weather_info():
     """
     city_name, city_url = get_configuration()
     content = get_page_source(city_url)
-    produce_output(city_name, get_weather_info(
-        "accu", content))
+    produce_output(city_name, get_weather_info("accu", content))
 
 
 def main(argv):
