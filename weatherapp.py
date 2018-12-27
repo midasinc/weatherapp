@@ -26,20 +26,25 @@ PROVIDER_NAME = {'accu': 'AccuWeather', 'rp5': 'RP5'}
 CONFIG_LOCATION = 'Location'
 CONFIG_FILE = 'weatherapp.ini'
 
+DEFAULT_NAME = 'Kyiv'
+
 # AccuWeather section
 ACCU_URL = (
     "https://www.accuweather.com/uk/ua/dnipro/322722/weather-forecast/322722")
 
 ACCU_BROWSE_LOCATIONS = 'https://www.accuweather.com/uk/browse-locations'
 
-ACCU_DEFAULT_NAME = 'Kyiv'
-ACCU_DEFAULT_URL = 'https://www.accuweather.com/uk/ua/kyiv/324505/weather-forecast/324505'
+ACCU_DEFAULT_URL = (
+    'https://www.accuweather.com/uk/ua/kyiv/324505/weather-forecast/324505')
 
 # RP5 section
 RP5_URL = (
     'http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%94%D0'
     '%BD%D1%96%D0%BF%D1%80%D1%96_(%D0%94%D0%BD%D1%96%D0%BF%D1%80%D0%BE'
     '%D0%BF%D0%B5%D1%82%D1%80%D0%BE%D0%B2%D1%81%D1%8C%D0%BA%D1%83)')
+
+RP5_DEFAULT_URL = ('http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_'
+                   '%D0%9A%D0%B8%D1%94%D0%B2%D1%96')
 
 
 def get_request_headers():
@@ -77,19 +82,19 @@ def get_configuration_file():
 def get_configuration(provider):
     """ Get configuration from file
     """
+
+    name = DEFAULT_NAME
     if provider == 'accu':
-        name = ACCU_DEFAULT_NAME
         url = ACCU_DEFAULT_URL
-
-        parser = configparser.ConfigParser()
-        parser.read(get_configuration_file())
-        if CONFIG_LOCATION in parser.sections():
-            config = parser[CONFIG_LOCATION]
-            name, url = config['name'], config['url']
-
     elif provider == 'rp5':
-        pass
+        url = RP5_DEFAULT_URL
 
+    parser = configparser.ConfigParser()
+    parser.read(get_configuration_file())
+
+    if provider in parser.sections():
+        config = parser[provider]
+        name, url = config['name'], config['url']
     return name, url
 
 
@@ -116,7 +121,8 @@ def configurate():
     save_configuration(*location)
 
 
-def save_weather_info():
+def save_weather_info(
+):  #FIXME: changed to work with multiple weather providers
     """ Saving weather forecast to file
     """
 
@@ -125,7 +131,9 @@ def save_weather_info():
     save_accu_weather(city_name, get_weather_info("accu", content))
 
 
-def save_accu_weather(city_name, info):
+def save_accu_weather(
+        city_name,
+        info):  #FIXME: changed to work with multiple weather providers
     """ Save the weather forecast from Accuweather to a file
     """
     path_to_wapp = Path.cwd()
@@ -222,7 +230,7 @@ def produce_output(provider, city_name, info):
     """ Output of the received data
     """
 
-    print(f'\nProvider: {PROVIDER_NAME[provider]}: \n')
+    print(f'\nProvider: {PROVIDER_NAME[provider]}\n')
     print(f'City: {city_name}')
     print('-' * 20)
     for key, value in info.items():
