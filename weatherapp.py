@@ -74,17 +74,21 @@ def get_configuration_file():
     return Path.home() / CONFIG_FILE
 
 
-def get_configuration():
+def get_configuration(provider):
     """ Get configuration from file
     """
-    name = DEFAULT_NAME
-    url = DEFAULT_URL
+    if provider == 'accu':
+        name = DEFAULT_NAME
+        url = DEFAULT_URL
 
-    parser = configparser.ConfigParser()
-    parser.read(get_configuration_file())
-    if CONFIG_LOCATION in parser.sections():
-        config = parser[CONFIG_LOCATION]
-        name, url = config['name'], config['url']
+        parser = configparser.ConfigParser()
+        parser.read(get_configuration_file())
+        if CONFIG_LOCATION in parser.sections():
+            config = parser[CONFIG_LOCATION]
+            name, url = config['name'], config['url']
+
+    elif provider == 'rp5':
+        pass
 
     return name, url
 
@@ -248,7 +252,7 @@ def get_provider_weather_info(provider):
         Getting information about the weather for the city.
         Output weather conditions for a specified city.
     """
-    city_name, city_url = get_configuration()
+    city_name, city_url = get_configuration(provider)
     content = get_page_source(city_url)
     produce_output(city_name, get_weather_info(provider, content))
 
