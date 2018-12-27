@@ -24,7 +24,7 @@ from urllib.request import urlopen, Request
 # URL and tags for current weather in the city of Dnipro on Accuweather site
 ACCU_URL = (
     "https://www.accuweather.com/uk/ua/dnipro/322722/weather-forecast/322722")
-ACCU_TAGS = ('<span class="large-temp">', '<span class="cond">')
+# ACCU_TAGS = ('<span class="large-temp">', '<span class="cond">')
 ACCU_BROWSE_LOCATIONS = 'https://www.accuweather.com/uk/browse-locations'
 
 # URL and tags for current weather in the city of Dnipro on RP5 site
@@ -32,8 +32,8 @@ RP5_URL = (
     'http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%94%D0'
     '%BD%D1%96%D0%BF%D1%80%D1%96_(%D0%94%D0%BD%D1%96%D0%BF%D1%80%D0%BE'
     '%D0%BF%D0%B5%D1%82%D1%80%D0%BE%D0%B2%D1%81%D1%8C%D0%BA%D1%83)')
-RP5_TAGS = ('<span class="t_0" style="display: block;">',
-            ('<div class="ArchiveInfo">', '°F</span>, '))
+# RP5_TAGS = ('<span class="t_0" style="display: block;">',
+#             ('<div class="ArchiveInfo">', '°F</span>, '))
 
 DEFAULT_NAME = 'Kyiv'
 DEFAULT_URL = 'https://www.accuweather.com/uk/ua/kyiv/324505/weather-forecast/324505'
@@ -248,7 +248,7 @@ def get_provider_weather_info(provider):
         Getting information about the weather for the city.
         Output weather conditions for a specified city.
     """
-    city_name, city_url = get_configuration(provider)
+    city_name, city_url = get_configuration()
     content = get_page_source(city_url)
     produce_output(city_name, get_weather_info(provider, content))
 
@@ -258,8 +258,8 @@ def main(argv):
 
     # Adding and parsing arguments
     KNOWN_COMMANDS = {
-        'accu': get_accu_weather_info,
-        'rp5': get_rp5_weather_info,
+        'accu': get_provider_weather_info,
+        'rp5': get_provider_weather_info,
         'config': configurate,
         'savef': save_weather_info
     }
