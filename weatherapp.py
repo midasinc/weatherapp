@@ -224,26 +224,33 @@ def produce_output(city_name, info):
         print(f'{key}: {html.unescape(value)}')
 
 
-def get_accu_weather_info():
-    """ For provider AccuWeather
-        Getting the name of the city and URL from the configuration file.
+# def get_accu_weather_info():
+#     """ For provider AccuWeather
+#         Getting the name of the city and URL from the configuration file.
+#         Getting information about the weather for the city.
+#         Output weather conditions for a specified city.
+#     """
+#     city_name, city_url = get_configuration()
+#     content = get_page_source(city_url)
+#     produce_output(city_name, get_weather_info("accu", content))
+
+# def get_rp5_weather_info():
+#     """ For provider AccuWeather
+#     Getting the name of the city and URL from the configuration file.
+#     Getting information about the weather for the city.
+#     Output weather conditions for a specified city.
+#     """
+#     city_name, city_url = get_configuration()
+#     content = get_page_source(city_url)
+#     produce_output(city_name, get_weather_info("rp5", content))
+def get_provider_weather_info(provider):
+    """ Getting the name of the city and URL from the configuration file.
         Getting information about the weather for the city.
         Output weather conditions for a specified city.
     """
-    city_name, city_url = get_configuration()
+    city_name, city_url = get_configuration(provider)
     content = get_page_source(city_url)
-    produce_output(city_name, get_weather_info("accu", content))
-
-def get_rp5_weather_info(provider):
-    """ For provider AccuWeather
-    Getting the name of the city and URL from the configuration file.
-    Getting information about the weather for the city.
-    Output weather conditions for a specified city.
-    """
-    import pdb; pdb.set_trace()
-    city_name, city_url = get_configuration()
-    content = get_page_source(city_url)
-    produce_output(city_name, get_weather_info("rp5", content))
+    produce_output(city_name, get_weather_info(provider, content))
 
 def main(argv):
     """ Main entry point.
