@@ -7,12 +7,11 @@ This module takes three arguments: `accu`, 'config' and `s`.
 Arguments:
 ----------
 accu - сalling weather from the provider AccuWeather
-    
 config - configuring the module for displaying weather for a given city
 
 Optional arguments:
 ------------------
-s - save weather to file 
+savef - save weather to file 
 """
 import sys
 import html
@@ -35,8 +34,10 @@ RP5_URL = (
     '%D0%BF%D0%B5%D1%82%D1%80%D0%BE%D0%B2%D1%81%D1%8C%D0%BA%D1%83)')
 RP5_TAGS = ('<span class="t_0" style="display: block;">',
             ('<div class="ArchiveInfo">', '°F</span>, '))
+
 DEFAULT_NAME = 'Kyiv'
 DEFAULT_URL = 'https://www.accuweather.com/uk/ua/kyiv/324505/weather-forecast/324505'
+
 CONFIG_LOCATION = 'Location'
 CONFIG_FILE = 'weatherapp.ini'
 
@@ -253,7 +254,7 @@ def main(argv):
         'accu': get_accu_weather_info,
         'rp5': get_rp5_weather_info,
         'config': configurate,
-        's': save_weather_info
+        'savef': save_weather_info
     }
     # KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5', 'sin': "Sinoptik"}
 
@@ -266,7 +267,7 @@ def main(argv):
     if params.command:
         command = params.command[0]
         if command in KNOWN_COMMANDS:
-            KNOWN_COMMANDS[command]()
+            KNOWN_COMMANDS[command](command)
         else:
             print("Unknown command provided!")
             sys.exit(1)
