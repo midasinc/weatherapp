@@ -21,25 +21,25 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
 
-# URL and tags for current weather in the city of Dnipro on Accuweather site
+PROVIDER_NAME = {'accu': 'AccuWeather', 'rp5': 'RP5'}
+
+CONFIG_LOCATION = 'Location'
+CONFIG_FILE = 'weatherapp.ini'
+
+# AccuWeather section
 ACCU_URL = (
     "https://www.accuweather.com/uk/ua/dnipro/322722/weather-forecast/322722")
-# ACCU_TAGS = ('<span class="large-temp">', '<span class="cond">')
+
 ACCU_BROWSE_LOCATIONS = 'https://www.accuweather.com/uk/browse-locations'
 
-# URL and tags for current weather in the city of Dnipro on RP5 site
+ACCU_DEFAULT_NAME = 'Kyiv'
+ACCU_DEFAULT_URL = 'https://www.accuweather.com/uk/ua/kyiv/324505/weather-forecast/324505'
+
+# RP5 section
 RP5_URL = (
     'http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%94%D0'
     '%BD%D1%96%D0%BF%D1%80%D1%96_(%D0%94%D0%BD%D1%96%D0%BF%D1%80%D0%BE'
     '%D0%BF%D0%B5%D1%82%D1%80%D0%BE%D0%B2%D1%81%D1%8C%D0%BA%D1%83)')
-# RP5_TAGS = ('<span class="t_0" style="display: block;">',
-#             ('<div class="ArchiveInfo">', '°F</span>, '))
-
-DEFAULT_NAME = 'Kyiv'
-DEFAULT_URL = 'https://www.accuweather.com/uk/ua/kyiv/324505/weather-forecast/324505'
-
-CONFIG_LOCATION = 'Location'
-CONFIG_FILE = 'weatherapp.ini'
 
 
 def get_request_headers():
@@ -78,8 +78,8 @@ def get_configuration(provider):
     """ Get configuration from file
     """
     if provider == 'accu':
-        name = DEFAULT_NAME
-        url = DEFAULT_URL
+        name = ACCU_DEFAULT_NAME
+        url = ACCU_DEFAULT_URL
 
         parser = configparser.ConfigParser()
         parser.read(get_configuration_file())
@@ -131,8 +131,8 @@ def save_accu_weather(city_name, info):
     path_to_wapp = Path.cwd()
     with open(path_to_wapp / 'weather.txt', 'w') as f:
         f.write('Provider: Accu Weather\n')
+        f.write(f'City: {city_name}')
         f.write('-' * 20)
-        f.write(f'\nCity: {city_name}')
         for key, value in info.items():
             f.write(f'\n{key}: {html.unescape(value)}')
         print('\nFile weather.txt has been saved to:')
@@ -218,35 +218,17 @@ def get_weather_info(command, page_content):
     return weather_info
 
 
-def produce_output(city_name, info):
+def produce_output(provider, city_name, info):
     """ Output of the received data
     """
-    print('Accu Weather: \n')
-    print(f'{city_name}')
+
+    print(f'\nProvider: {PROVIDER_NAME[provider]}: \n')
+    print(f'City: {city_name}')
     print('-' * 20)
     for key, value in info.items():
         print(f'{key}: {html.unescape(value)}')
 
 
-# def get_accu_weather_info():
-#     """ For provider AccuWeather
-#         Getting the name of the city and URL from the configuration file.
-#         Getting information about the weather for the city.
-#         Output weather conditions for a specified city.
-#     """
-#     city_name, city_url = get_configuration()
-#     content = get_page_source(city_url)
-#     produce_output(city_name, get_weather_info("accu", content))
-
-# def get_rp5_weather_info():
-#     """ For provider AccuWeather
-#     Getting the name of the city and URL from the configuration file.
-#     Getting information about the weather for the city.
-#     Output weather conditions for a specified city.
-#     """
-#     city_name, city_url = get_configuration()
-#     content = get_page_source(city_url)
-#     produce_output(city_name, get_weather_info("rp5", content))
 def get_provider_weather_info(provider):
     """ Getting the name of the city and URL from the configuration file.
         Getting information about the weather for the city.
@@ -254,7 +236,8 @@ def get_provider_weather_info(provider):
     """
     city_name, city_url = get_configuration(provider)
     content = get_page_source(city_url)
-    produce_output(city_name, get_weather_info(provider, content))
+    produce_output(provider, city_name, get_weather_info(provider, content))
+
 
 def main(argv):
     """ Main entry point.
@@ -267,7 +250,6 @@ def main(argv):
         'config': configurate,
         'savef': save_weather_info
     }
-    # KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5', 'sin': "Sinoptik"}
 
     parser = argparse.ArgumentParser()
     parser.add_argument('command', help='Short name of provider', nargs=1)
