@@ -89,7 +89,7 @@ def get_configuration(provider):
     elif provider == 'rp5':
         url = RP5_DEFAULT_URL
 
-    parser = configparser.ConfigParser()
+    parser = configparser.ConfigParser(strict=False, interpolation=None)
     parser.read(get_configuration_file())
 
     if provider in parser.sections():
@@ -98,16 +98,20 @@ def get_configuration(provider):
     return name, url
 
 
-def save_configuration(name, url):
+def save_configuration(provider, name, url):
     """ Save configuration to file
     """
-    parser = configparser.ConfigParser()
-    parser[CONFIG_LOCATION] = {'name': name, 'url': url}
+    parser = configparser.ConfigParser(strict=False, interpolation=None)
+    parser.add_section(provider)
+    # parser.set(provider, "name", name)
+    # parser.set(provider, "url", url)
+    parser[provider] = {'name': name, 'url': url}
+
     with open(get_configuration_file(), 'w') as configfile:
         parser.write(configfile)
 
 
-def configurate():
+def configurate(provider):
     """Creating a configuration
     """
     locations = get_locations(ACCU_BROWSE_LOCATIONS)
@@ -117,12 +121,10 @@ def configurate():
         selected_index = int(input('Please select location: '))
         location = locations[selected_index - 1]
         locations = get_locations(location[1])
+    save_configuration(provider, *location)
 
-    save_configuration(*location)
 
-
-def save_weather_info(
-):  #FIXME: changed to work with multiple weather providers
+def save_weather_info():  #FIXME: changed to work with multiple weather providers
     """ Saving weather forecast to file
     """
 
