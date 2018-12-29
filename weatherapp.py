@@ -23,7 +23,6 @@ from urllib.request import urlopen, Request
 
 PROVIDER_NAME = {'accu': 'AccuWeather', 'rp5': 'RP5'}
 
-CONFIG_LOCATION = 'Location'
 CONFIG_FILE = 'weatherapp.ini'
 
 DEFAULT_NAME = 'Kyiv'
@@ -31,20 +30,19 @@ DEFAULT_NAME = 'Kyiv'
 # AccuWeather section
 ACCU_URL = (
     "https://www.accuweather.com/uk/ua/dnipro/322722/weather-forecast/322722")
-
-ACCU_BROWSE_LOCATIONS = 'https://www.accuweather.com/uk/browse-locations'
-
 ACCU_DEFAULT_URL = (
     'https://www.accuweather.com/uk/ua/kyiv/324505/weather-forecast/324505')
+ACCU_BROWSE_LOCATIONS = 'https://www.accuweather.com/uk/browse-locations'
 
 # RP5 section
 RP5_URL = (
     'http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%94%D0'
     '%BD%D1%96%D0%BF%D1%80%D1%96_(%D0%94%D0%BD%D1%96%D0%BF%D1%80%D0%BE'
     '%D0%BF%D0%B5%D1%82%D1%80%D0%BE%D0%B2%D1%81%D1%8C%D0%BA%D1%83)')
-
 RP5_DEFAULT_URL = ('http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_'
                    '%D0%9A%D0%B8%D1%94%D0%B2%D1%96')
+RP5_BROWSE_LOCATIONS = ('http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_'
+                        '%D0%B2_%D1%81%D0%B2%D1%96%D1%82%D1%96')                   
 
 
 def get_request_headers():
@@ -76,7 +74,7 @@ def get_locations(locations_url):
 def get_configuration_file():
     """ Getting the path to the configuration file
     """
-    return Path.home() / CONFIG_FILE
+    return Path.cwd() / CONFIG_FILE
 
 
 def get_configuration(provider):
@@ -110,11 +108,24 @@ def save_configuration(provider, name, url):
     with open(get_configuration_file(), 'w') as configfile:
         parser.write(configfile)
 
-
-def configurate(provider):
+def configurate():
     """Creating a configuration
+     TODO: Modify operation logic for configuring multiple weather providers
     """
-    locations = get_locations(ACCU_BROWSE_LOCATIONS)
+    print('1. AccuWeather \n2. RP5 ')
+    num_provider = int(input('Please select provider: '))
+
+    if num_provider == 1:
+        browse_locations = ACCU_BROWSE_LOCATIONS
+        provider = 'accu'
+    elif num_provider == 2:
+        browse_locations = RP5_BROWSE_LOCATIONS
+        provider = 'rp5'
+    else:
+        print('Unknown weather provider')
+        sys.exit(1)
+
+    locations = get_locations(browse_locations)
     while locations:
         for index, location in enumerate(locations):
             print(f'{index + 1}, {location[0]}')
@@ -133,9 +144,8 @@ def save_weather_info():  #FIXME: changed to work with multiple weather provider
     save_accu_weather(city_name, get_weather_info("accu", content))
 
 
-def save_accu_weather(
-        city_name,
-        info):  #FIXME: changed to work with multiple weather providers
+def save_accu_weather(city_name, info):  
+    #FIXME: changed to work with multiple weather providers
     """ Save the weather forecast from Accuweather to a file
     """
     path_to_wapp = Path.cwd()
@@ -270,7 +280,11 @@ def main(argv):
     if params.command:
         command = params.command[0]
         if command in KNOWN_COMMANDS:
-            KNOWN_COMMANDS[command](command)
+            if command == 'config':
+               KNOWN_COMMANDS[command]()
+            else:
+               KNOWN_COMMANDS[command](command)
+            
         else:
             print("Unknown command provided!")
             sys.exit(1)
