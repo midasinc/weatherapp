@@ -57,7 +57,8 @@ def get_page_source(url):
     return page_source.decode('utf-8')
 
 
-def get_locations(locations_url):
+def get_locations(locations_url): 
+    # TODO: Check work with different providers
     """Getting a list of cities 
     """
     locations_page = get_page_source(locations_url)
@@ -135,23 +136,22 @@ def configurate():
     save_configuration(provider, *location)
 
 
-def save_weather_info():  #FIXME: changed to work with multiple weather providers
+def save_weather_info(provider):  
     """ Saving weather forecast to file
     """
 
-    city_name, city_url = get_configuration()
+    city_name, city_url = get_configuration(provider)
     content = get_page_source(city_url)
-    save_accu_weather(city_name, get_weather_info("accu", content))
+    save_weather_to_file(provider, city_name, get_weather_info(provider, content))
 
 
-def save_accu_weather(city_name, info):  
-    #FIXME: changed to work with multiple weather providers
+def save_weather_to_file(provider, city_name, info):  
     """ Save the weather forecast from Accuweather to a file
     """
     path_to_wapp = Path.cwd()
     with open(path_to_wapp / 'weather.txt', 'w') as f:
-        f.write('Provider: Accu Weather\n')
-        f.write(f'City: {city_name}')
+        f.write(f'\nProvider: {PROVIDER_NAME[provider]}\n')
+        f.write(f'City: {city_name}\n')
         f.write('-' * 20)
         for key, value in info.items():
             f.write(f'\n{key}: {html.unescape(value)}')
@@ -189,7 +189,7 @@ def get_weather_info(command, page_content):
                     weather_info_accu['temp'] = temp.text
                 feal_temp = weather_details.find('span', class_='small-temp')
                 if feal_temp:
-                    weather_info_accu['feal_temp'] = feal_temp.text
+                    weather_info_accu['feal_temp'] = feal_temp.text.replace('RealFeel® ', '')
                 wind_info = weather_details.find_all('li', class_='wind')
                 if wind_info:
                     weather_info_accu['wind'] = \
@@ -289,9 +289,9 @@ def main(argv):
             print("Unknown command provided!")
             sys.exit(1)
     if params.command2:
-        command2 = params.command2[0]
+        command2 = params.command2
         if command2 in KNOWN_COMMANDS:
-            KNOWN_COMMANDS[command2]()
+            KNOWN_COMMANDS[command2](command)
         else:
             print("Unknown command provided!")
             sys.exit(1)
