@@ -70,6 +70,20 @@ def get_accu_locations(locations_url):
         locations.append((location, url))
     return locations
 
+def get_rp5_countries(locations_url): 
+    """Getting a list of countries for RP5 provider 
+    """
+    locations_page = get_page_source(locations_url)
+    soup = BeautifulSoup(locations_page, 'lxml')
+
+    countries = []
+    add_url = 'http://rp5.ua'
+    for location in soup.find_all('div', class_= 'country_map_links'):
+        url = add_url + quote(location.find('a').attrs['href'])
+        location = location.find('a').text
+        countries.append((location, url))
+    return countries
+
 
 def get_configuration_file():
     """ Getting the path to the configuration file
@@ -125,13 +139,13 @@ def configurate():
         print('Unknown weather provider')
         sys.exit(1)
 
-    locations = get_locations(browse_locations)
+    locations = get_accu_locations(browse_locations)
     while locations:
         for index, location in enumerate(locations):
             print(f'{index + 1}, {location[0]}')
         selected_index = int(input('Please select location: '))
         location = locations[selected_index - 1]
-        locations = get_locations(location[1])
+        locations = get_accu_locations(location[1])
     save_configuration(provider, *location)
 
 
