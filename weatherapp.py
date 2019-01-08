@@ -20,6 +20,8 @@ import configparser
 from pathlib import Path
 from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
+from urllib.parse import quote
+
 
 PROVIDER_NAME = {'accu': 'AccuWeather', 'rp5': 'RP5'}
 
@@ -150,21 +152,33 @@ def configurate():
     if num_provider == 1:
         browse_locations = ACCU_BROWSE_LOCATIONS
         provider = 'accu'
+        locations = get_accu_locations(browse_locations)
+        while locations:
+            for index, location in enumerate(locations):
+                print(f'{index + 1}, {location[0]}')
+            selected_index = int(input('Please select location: '))
+            location = locations[selected_index - 1]
+            locations = get_accu_locations(location[1])
     elif num_provider == 2:
         browse_locations = RP5_BROWSE_LOCATIONS
         provider = 'rp5'
+        countries = get_rp5_countries(browse_locations)
+        for index, country in enumerate(countries):
+            print(f'{index + 1}, {country[0]}')
+        selected_index = int(input('Please select location: '))
+        country = countries[selected_index - 1]
+
+        cities = get_rp5_cities(country[1])
+        for index, city in enumerate(cities):
+            print(f'{index + 1}. {city[0]}')
+        selected_index = int(input('Please select city: '))
+        location = cities[selected_index - 1]
     else:
         print('Unknown weather provider')
         sys.exit(1)
 
-    locations = get_accu_locations(browse_locations)
-    while locations:
-        for index, location in enumerate(locations):
-            print(f'{index + 1}, {location[0]}')
-        selected_index = int(input('Please select location: '))
-        location = locations[selected_index - 1]
-        locations = get_accu_locations(location[1])
     save_configuration(provider, *location)
+
 
 
 def save_weather_info(provider):  
