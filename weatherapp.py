@@ -22,11 +22,8 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
 from urllib.parse import quote
 
-
 PROVIDER_NAME = {'accu': 'AccuWeather', 'rp5': 'RP5'}
-
 CONFIG_FILE = 'weatherapp.ini'
-
 DEFAULT_NAME = 'Kyiv'
 
 # AccuWeather section
@@ -44,7 +41,7 @@ RP5_URL = (
 RP5_DEFAULT_URL = ('http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_'
                    '%D0%9A%D0%B8%D1%94%D0%B2%D1%96')
 RP5_BROWSE_LOCATIONS = ('http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_'
-                        '%D0%B2_%D1%81%D0%B2%D1%96%D1%82%D1%96')                   
+                        '%D0%B2_%D1%81%D0%B2%D1%96%D1%82%D1%96')
 
 
 def get_request_headers():
@@ -59,7 +56,7 @@ def get_page_source(url):
     return page_source.decode('utf-8')
 
 
-def get_accu_locations(locations_url): 
+def get_accu_locations(locations_url):
     """Getting a list of cities for ACCU provider 
     """
     locations_page = get_page_source(locations_url)
@@ -72,7 +69,8 @@ def get_accu_locations(locations_url):
         locations.append((location, url))
     return locations
 
-def get_rp5_countries(locations_url): 
+
+def get_rp5_countries(locations_url):
     """Getting a list of countries for RP5 provider 
     """
     locations_page = get_page_source(locations_url)
@@ -80,13 +78,14 @@ def get_rp5_countries(locations_url):
 
     countries = []
     add_url = 'http://rp5.ua'
-    for location in soup.find_all('div', class_= 'country_map_links'):
+    for location in soup.find_all('div', class_='country_map_links'):
         url = add_url + quote(location.find('a').attrs['href'])
         location = location.find('a').text
         countries.append((location, url))
     return countries
 
-def get_rp5_cities(cities_url): 
+
+def get_rp5_cities(cities_url):
     """Getting a list of cities for RP5 provider 
     """
     locations_page = get_page_source(cities_url)
@@ -101,7 +100,7 @@ def get_rp5_cities(cities_url):
             url = add_url + quote(city.find('a').attrs['href'])
             city = city.find('a').text
             cities.append((city, url))
-    
+
     return cities
 
 
@@ -142,9 +141,9 @@ def save_configuration(provider, name, url):
     with open(get_configuration_file(), 'w') as configfile:
         parser.write(configfile)
 
+
 def configurate():
     """Creating a configuration
-     TODO: Modify operation logic for configuring multiple weather providers
     """
     print('1. AccuWeather \n2. RP5 ')
     num_provider = int(input('Please select provider: '))
@@ -180,17 +179,17 @@ def configurate():
     save_configuration(provider, *location)
 
 
-
-def save_weather_info(provider):  
+def save_weather_info(provider):
     """ Saving weather forecast to file
     """
 
     city_name, city_url = get_configuration(provider)
     content = get_page_source(city_url)
-    save_weather_to_file(provider, city_name, get_weather_info(provider, content))
+    save_weather_to_file(provider, city_name,
+                         get_weather_info(provider, content))
 
 
-def save_weather_to_file(provider, city_name, info):  
+def save_weather_to_file(provider, city_name, info):
     """ Save the weather forecast from Accuweather to a file
     """
     path_to_wapp = Path.cwd()
@@ -234,7 +233,8 @@ def get_weather_info(command, page_content):
                     weather_info_accu['temp'] = temp.text
                 feal_temp = weather_details.find('span', class_='small-temp')
                 if feal_temp:
-                    weather_info_accu['feal_temp'] = feal_temp.text.replace('RealFeel® ', '')
+                    weather_info_accu['feal_temp'] = feal_temp.text.replace(
+                        'RealFeel® ', '')
                 wind_info = weather_details.find_all('li', class_='wind')
                 if wind_info:
                     weather_info_accu['wind'] = \
@@ -326,10 +326,10 @@ def main(argv):
         command = params.command[0]
         if command in KNOWN_COMMANDS:
             if command == 'config':
-               KNOWN_COMMANDS[command]()
+                KNOWN_COMMANDS[command]()
             else:
-               KNOWN_COMMANDS[command](command)
-            
+                KNOWN_COMMANDS[command](command)
+
         else:
             print("Unknown command provided!")
             sys.exit(1)
