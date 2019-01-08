@@ -57,9 +57,8 @@ def get_page_source(url):
     return page_source.decode('utf-8')
 
 
-def get_locations(locations_url): 
-    # TODO: Check work with different providers
-    """Getting a list of cities 
+def get_accu_locations(locations_url): 
+    """Getting a list of cities for ACCU provider 
     """
     locations_page = get_page_source(locations_url)
     soup = BeautifulSoup(locations_page, 'lxml')
