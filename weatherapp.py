@@ -2,7 +2,7 @@
 """
 Weather app project.
 
-This module takes four arguments: `accu`, 'rp5', 'config' and `s`.
+This module takes four arguments: `accu`, 'rp5', 'config' and `savef`.
 
 Arguments:
 ----------
