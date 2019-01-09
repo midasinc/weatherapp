@@ -2,11 +2,12 @@
 """
 Weather app project.
 
-This module takes three arguments: `accu`, 'config' and `s`.
+This module takes four arguments: `accu`, 'rp5', 'config' and `s`.
 
 Arguments:
 ----------
 accu - сalling weather from the provider AccuWeather
+rp5 - сalling weather from the provider RP5
 config - configuring the module for displaying weather for a given city
 
 Optional arguments:
@@ -251,7 +252,6 @@ def get_weather_info(command, page_content):
 
         current_day_section = \
             city_page.find('div', attrs={'id': 'archiveString'})
-
         weather_info_rp5 = {}
         condition = \
             str(current_day_section.find('span', class_='wv_0').previous)
@@ -274,7 +274,6 @@ def get_weather_info(command, page_content):
         if wind_velocity and wind_direction:
             weather_info_rp5['wind'] = \
                 'Вітер' + wind_velocity + ', ' + wind_direction
-
         return weather_info_rp5
 
     city_page = BeautifulSoup(page_content, "lxml")
