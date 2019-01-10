@@ -56,6 +56,7 @@ def get_cache_directory():
     """
     return Path.cwd() / CACHE_DIR
 
+
 def save_cache(url, page_source):
     """ Save page source data to file
     """
@@ -71,10 +72,14 @@ def save_cache(url, page_source):
 def get_page_source(url):
     """ Returns the contents of the page at the specified URL
     """
-    request = Request(url, headers=get_request_headers())
-    page_source = urlopen(request).read()
 
-    save_cache(url, page_source)
+    cache = get_cache(url)
+    if cache:
+        page_source = cache
+    else:        
+        request = Request(url, headers=get_request_headers())
+        page_source = urlopen(request).read()
+        save_cache(url, page_source)
 
     return page_source.decode('utf-8')
 
