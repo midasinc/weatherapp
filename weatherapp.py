@@ -56,11 +56,17 @@ def get_cache_directory():
     """
     return Path.cwd() / CACHE_DIR
 
+def get_url_hash(url):
+    """ Generate url hash.
+    """
+
+    return hashlib.md5(url.encode('utf-8')).hexdigest()
+
 
 def save_cache(url, page_source):
     """ Save page source data to file
     """
-    url_hash = hashlib.md5(url.encode('utf-8')).hexdigest()
+    url_hash = get_url_hash(url)
     cache_dir = get_cache_directory()
     if not cache_dir.exists():
         cache_dir.mkdir(parents=True)
