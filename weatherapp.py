@@ -62,6 +62,20 @@ def get_url_hash(url):
 
     return hashlib.md5(url.encode('utf-8')).hexdigest()
 
+def get_cache(url):
+    """ Return cache by given url address if any.
+    """
+
+    cache = b''
+    url_hash = get_url_hash(url)
+    cache_dir = get_cache_directory()
+    if cache_dir.exists():
+        cache_path = cache_dir / url_hash
+        if cache_path.exists():
+            with cache_path.open('rb') as cache_file:
+                cache = cache_file.read()
+    return cache
+
 
 def save_cache(url, page_source):
     """ Save page source data to file
