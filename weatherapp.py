@@ -44,9 +44,16 @@ RP5_DEFAULT_URL = ('http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_'
 RP5_BROWSE_LOCATIONS = ('http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_'
                         '%D0%B2_%D1%81%D0%B2%D1%96%D1%82%D1%96')
 
+# Cache constants
+CACHE_DIR = '.wappcache'
 
 def get_request_headers():
     return {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64)'}
+
+def get_cache_directory():
+    """ Path to cache directory
+    """
+    return Path.cwd() / CACHE_DIR
 
 
 def get_page_source(url):
