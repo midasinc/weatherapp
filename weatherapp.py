@@ -2,7 +2,7 @@
 """
 Weather app project.
 
-This module takes four arguments: `accu`, 'rp5', 'config' and `savef`.
+The module receives the following arguments: 
 
 Arguments:
 ----------
@@ -12,8 +12,11 @@ config - configuring the module for displaying weather for a given city
 
 Optional arguments:
 ------------------
-savef - save weather to file 
+savef - save weather to file. The command is used together with `accu`, 'rp5'
+--refresh - updates data not from the cache. The command is used together with
+            `accu`, 'rp5' and 'config'.
 """
+
 import sys
 import html
 import hashlib
@@ -50,13 +53,16 @@ RP5_BROWSE_LOCATIONS = ('http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_'
 CACHE_DIR = '.wappcache'
 CACHE_TIME = 10
 
+
 def get_request_headers():
     return {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64)'}
+
 
 def get_cache_directory():
     """ Path to cache directory
     """
     return Path.cwd() / CACHE_DIR
+
 
 def get_url_hash(url):
     """ Generate url hash.
@@ -64,11 +70,13 @@ def get_url_hash(url):
 
     return hashlib.md5(url.encode('utf-8')).hexdigest()
 
+
 def is_valid(path):
     """ Check if current cache file is valid
     """
 
     return (time.time() - path.stat().st_mtime) < CACHE_TIME
+
 
 def get_cache(url):
     """ Return cache by given url address if any.
@@ -104,7 +112,7 @@ def get_page_source(url, refresh=False):
     cache = get_cache(url)
     if cache and not refresh:
         page_source = cache
-    else:        
+    else:
         request = Request(url, headers=get_request_headers())
         page_source = urlopen(request).read()
         save_cache(url, page_source)
@@ -279,7 +287,8 @@ def get_weather_info(command, page_content, refresh=False):
         weather_info_accu = {}
         current_day_url = current_day_section.find('a').attrs['href']
         if current_day_url:
-            current_day_page = get_page_source(current_day_url, refresh=refresh)
+            current_day_page = get_page_source(
+                current_day_url, refresh=refresh)
             if current_day_page:
                 current_day = \
                     BeautifulSoup(current_day_page, "lxml")
@@ -359,7 +368,8 @@ def get_provider_weather_info(provider, refresh=False):
     """
     city_name, city_url = get_configuration(provider)
     content = get_page_source(city_url, refresh=refresh)
-    produce_output(provider, city_name, get_weather_info(provider, content, refresh=refresh))
+    produce_output(provider, city_name,
+                   get_weather_info(provider, content, refresh=refresh))
 
 
 def main(argv):
