@@ -97,12 +97,12 @@ def save_cache(url, page_source):
         cache_file.write(page_source)
 
 
-def get_page_source(url):
+def get_page_source(url, refresh=False):
     """ Returns the contents of the page at the specified URL
     """
 
     cache = get_cache(url)
-    if cache:
+    if cache and not refresh:
         page_source = cache
     else:        
         request = Request(url, headers=get_request_headers())
@@ -112,10 +112,10 @@ def get_page_source(url):
     return page_source.decode('utf-8')
 
 
-def get_accu_locations(locations_url):
+def get_accu_locations(locations_url, refresh=False):
     """Getting a list of cities for ACCU provider 
     """
-    locations_page = get_page_source(locations_url)
+    locations_page = get_page_source(locations_url, refresh=refresh)
     soup = BeautifulSoup(locations_page, 'lxml')
 
     locations = []
@@ -126,10 +126,10 @@ def get_accu_locations(locations_url):
     return locations
 
 
-def get_rp5_countries(locations_url):
+def get_rp5_countries(locations_url, refresh=False):
     """Getting a list of countries for RP5 provider 
     """
-    locations_page = get_page_source(locations_url)
+    locations_page = get_page_source(locations_url, refresh=refresh)
     soup = BeautifulSoup(locations_page, 'lxml')
 
     countries = []
@@ -141,10 +141,10 @@ def get_rp5_countries(locations_url):
     return countries
 
 
-def get_rp5_cities(cities_url):
+def get_rp5_cities(cities_url, refresh=False):
     """Getting a list of cities for RP5 provider 
     """
-    locations_page = get_page_source(cities_url)
+    locations_page = get_page_source(cities_url, refresh=refresh)
     soup = BeautifulSoup(locations_page, 'lxml')
 
     cities = []
@@ -202,7 +202,7 @@ def save_configuration(provider, name, url):
         parser.write(configfile)
 
 
-def configurate():
+def configurate(refresh=False):
     """Creating a configuration
     """
     print('1. AccuWeather \n2. RP5 ')
@@ -211,23 +211,23 @@ def configurate():
     if num_provider == 1:
         browse_locations = ACCU_BROWSE_LOCATIONS
         provider = 'accu'
-        locations = get_accu_locations(browse_locations)
+        locations = get_accu_locations(browse_locations, refresh=refresh)
         while locations:
             for index, location in enumerate(locations):
                 print(f'{index + 1}, {location[0]}')
             selected_index = int(input('Please select location: '))
             location = locations[selected_index - 1]
-            locations = get_accu_locations(location[1])
+            locations = get_accu_locations(location[1], refresh=refresh)
     elif num_provider == 2:
         browse_locations = RP5_BROWSE_LOCATIONS
         provider = 'rp5'
-        countries = get_rp5_countries(browse_locations)
+        countries = get_rp5_countries(browse_locations, refresh=refresh)
         for index, country in enumerate(countries):
             print(f'{index + 1}, {country[0]}')
         selected_index = int(input('Please select location: '))
         country = countries[selected_index - 1]
 
-        cities = get_rp5_cities(country[1])
+        cities = get_rp5_cities(country[1], refresh=refresh)
         for index, city in enumerate(cities):
             print(f'{index + 1}. {city[0]}')
         selected_index = int(input('Please select city: '))
@@ -263,11 +263,11 @@ def save_weather_to_file(provider, city_name, info):
         print(path_to_wapp)
 
 
-def get_weather_info(command, page_content):
+def get_weather_info(command, page_content, refresh=False):
     """ Receiving the current weather data
     """
 
-    def get_weather_info_accu(city_page):
+    def get_weather_info_accu(city_page, refresh=False):
         """ Getting data about the current weather for AccuWeather    
         """
         current_day_section = \
@@ -279,7 +279,7 @@ def get_weather_info(command, page_content):
         weather_info_accu = {}
         current_day_url = current_day_section.find('a').attrs['href']
         if current_day_url:
-            current_day_page = get_page_source(current_day_url)
+            current_day_page = get_page_source(current_day_url, refresh=refresh)
             if current_day_page:
                 current_day = \
                     BeautifulSoup(current_day_page, "lxml")
@@ -334,7 +334,7 @@ def get_weather_info(command, page_content):
     city_page = BeautifulSoup(page_content, "lxml")
     weather_info = {}
     if command == 'accu':
-        weather_info = get_weather_info_accu(city_page)
+        weather_info = get_weather_info_accu(city_page, refresh=False)
     if command == 'rp5':
         weather_info = get_weather_info_rp5(city_page)
 
@@ -352,14 +352,14 @@ def produce_output(provider, city_name, info):
         print(f'{key}: {html.unescape(value)}')
 
 
-def get_provider_weather_info(provider):
+def get_provider_weather_info(provider, refresh=False):
     """ Getting the name of the city and URL from the configuration file.
         Getting information about the weather for the city.
         Output weather conditions for a specified city.
     """
     city_name, city_url = get_configuration(provider)
-    content = get_page_source(city_url)
-    produce_output(provider, city_name, get_weather_info(provider, content))
+    content = get_page_source(city_url, refresh=refresh)
+    produce_output(provider, city_name, get_weather_info(provider, content, refresh=refresh))
 
 
 def main(argv):
@@ -376,6 +376,7 @@ def main(argv):
 
     parser = argparse.ArgumentParser()
     parser.add_argument('command', help='Short name of provider', nargs=1)
+    parser.add_argument('--refresh', help='Update caches', action='store_true')
     parser.add_argument(
         'command2', help='Save weather info to file', nargs='?')
     params = parser.parse_args(argv)
@@ -384,9 +385,9 @@ def main(argv):
         command = params.command[0]
         if command in KNOWN_COMMANDS:
             if command == 'config':
-                KNOWN_COMMANDS[command]()
+                KNOWN_COMMANDS[command](refresh=params.refresh)
             else:
-                KNOWN_COMMANDS[command](command)
+                KNOWN_COMMANDS[command](command, refresh=params.refresh)
 
         else:
             print("Unknown command provided!")
