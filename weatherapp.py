@@ -17,6 +17,7 @@ savef - save weather to file
 import sys
 import html
 import hashlib
+import time
 import argparse
 import configparser
 from pathlib import Path
@@ -47,6 +48,7 @@ RP5_BROWSE_LOCATIONS = ('http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_'
 
 # Cache constants
 CACHE_DIR = '.wappcache'
+CACHE_TIME = 10
 
 def get_request_headers():
     return {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64)'}
@@ -62,6 +64,12 @@ def get_url_hash(url):
 
     return hashlib.md5(url.encode('utf-8')).hexdigest()
 
+def is_valid(path):
+    """ Check if current cache file is valid
+    """
+
+    return (time.time() - path.stat().st_mtime) < CACHE_TIME
+
 def get_cache(url):
     """ Return cache by given url address if any.
     """
@@ -71,7 +79,7 @@ def get_cache(url):
     cache_dir = get_cache_directory()
     if cache_dir.exists():
         cache_path = cache_dir / url_hash
-        if cache_path.exists():
+        if cache_path.exists() and is_valid(cache_path):
             with cache_path.open('rb') as cache_file:
                 cache = cache_file.read()
     return cache
