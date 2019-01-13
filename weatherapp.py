@@ -25,7 +25,6 @@ import argparse
 import configparser
 from pathlib import Path
 from bs4 import BeautifulSoup
-# from urllib.request import urlopen, Request
 from urllib.parse import quote
 
 import requests
@@ -116,8 +115,6 @@ def get_page_source(url, refresh=False):
     if cache and not refresh:
         page_source = cache
     else:
-        # request = Request(url, headers=get_request_headers())
-        # page_source = urlopen(request).read()
         page = requests.get(url, headers=get_request_headers())
         page_source = page.content
         save_cache(url, page_source)
