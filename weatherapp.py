@@ -17,6 +17,7 @@ savef - save weather to file. The command is used together with `accu`, 'rp5'
             `accu`, 'rp5' and 'config'.
 """
 
+import re
 import sys
 import html
 import hashlib
@@ -283,7 +284,7 @@ def get_weather_info(command, page_content, refresh=False):
             city_page.find('li', class_='day current first cl')
         if current_day_section == None:
             current_day_section = \
-                city_page.find('li', class_='night current first cl')
+                city_page.find('li', class_=re.compile('(day|night) current first cl'))
 
         weather_info_accu = {}
         current_day_url = current_day_section.find('a').attrs['href']
