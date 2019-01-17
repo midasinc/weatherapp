@@ -50,6 +50,8 @@ RP5_DEFAULT_URL = ('http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_'
                    '%D0%9A%D0%B8%D1%94%D0%B2%D1%96')
 RP5_BROWSE_LOCATIONS = ('http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_'
                         '%D0%B2_%D1%81%D0%B2%D1%96%D1%82%D1%96')
+ADD_URL = 'http://rp5.ua/'
+
 
 # Cache constants
 CACHE_DIR = '.wappcache'
@@ -143,9 +145,8 @@ def get_rp5_countries(locations_url, refresh=False):
     soup = BeautifulSoup(locations_page, 'lxml')
 
     countries = []
-    add_url = 'http://rp5.ua/'
     for location in soup.find_all('div', class_='country_map_links'):
-        url = add_url + quote(location.find('a').attrs['href'])
+        url = ADD_URL + quote(location.find('a').attrs['href'])
         location = location.find('a').text
         countries.append((location, url))
     return countries
@@ -158,12 +159,10 @@ def get_rp5_cities(cities_url, refresh=False):
     soup = BeautifulSoup(locations_page, 'lxml')
 
     cities = []
-    add_url = 'http://rp5.ua/'
-
     cities_map = soup.find('div', class_='countryMap')
     if cities_map:
         for city in cities_map.find_all('h3'):
-            url = add_url + quote(city.find('a').attrs['href'])
+            url = ADD_URL + quote(city.find('a').attrs['href'])
             city = city.find('a').text
             cities.append((city, url))
 
