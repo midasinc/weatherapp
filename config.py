@@ -1,8 +1,9 @@
 PROVIDER_NAME = {'accu': 'AccuWeather', 'rp5': 'RP5'}
-CONFIG_FILE = 'weatherapp.ini'
+
 DEFAULT_NAME = 'Дніпро'
 
 # AccuWeather section
+ACCU_PROVIDER_NAME = 'accu'
 ACCU_URL = (
     "https://www.accuweather.com/uk/ua/dnipro/322722/weather-forecast/322722")
 ACCU_DEFAULT_URL = (
@@ -21,6 +22,9 @@ RP5_BROWSE_LOCATIONS = ('http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_'
 ADD_URL = 'http://rp5.ua/'
 
 
-# Cache constants
+# Config section
+CONFIG_FILE = 'weatherapp.ini'
+
+# Cache section
 CACHE_DIR = '.wappcache'
 CACHE_TIME = 10
