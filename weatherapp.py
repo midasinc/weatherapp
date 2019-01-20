@@ -148,25 +148,6 @@ def get_configuration_file():
     return Path.cwd() / CONFIG_FILE
 
 
-def get_configuration(provider):
-    """ Get configuration from file
-    """
-
-    name = DEFAULT_NAME
-    if provider == 'accu':
-        url = ACCU_DEFAULT_URL
-    elif provider == 'rp5':
-        url = RP5_DEFAULT_URL
-
-    parser = configparser.ConfigParser(strict=False, interpolation=None)
-    parser.read(get_configuration_file())
-
-    if provider in parser.sections():
-        config = parser[provider]
-        name, url = config['name'], config['url']
-    return name, url
-
-
 def save_configuration(provider, name, url):
     """ Save configuration to file
     """
