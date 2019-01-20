@@ -57,3 +57,12 @@ class AccuWeatherProvider:
 
         with open(self.get_configuration_file(), 'w') as configfile:
             parser.write(configfile)
+
+    def get_request_headers(self):
+        """ Return custom headers for url requests.
+        """
+
+        return {'User-Agent': config.FAKE_MOZILLA_AGENT}
+
+
+

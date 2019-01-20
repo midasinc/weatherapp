@@ -31,8 +31,6 @@ from urllib.parse import quote
 import requests
 
 
-def get_request_headers():
-    return {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64)'}
 
 
 def get_cache_directory():

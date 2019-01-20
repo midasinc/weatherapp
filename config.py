@@ -2,6 +2,8 @@ PROVIDER_NAME = {'accu': 'AccuWeather', 'rp5': 'RP5'}
 
 DEFAULT_NAME = 'Дніпро'
 
+FAKE_MOZILLA_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64)'
+
 # AccuWeather section
 ACCU_PROVIDER_NAME = 'accu'
 ACCU_URL = (
