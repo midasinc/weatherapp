@@ -24,9 +24,10 @@ class AccuWeatherProvider:
         """
         return Path.cwd() / config.CONFIG_FILE
 
-    def get_configuration(self):
+    def get_configuration(self, provider):
         """ Get configuration from file
         """
+        #FIXME: Check provider use
 
         name = config.DEFAULT_NAME
         url = config.ACCU_DEFAULT_URL
@@ -34,8 +35,25 @@ class AccuWeatherProvider:
 
         parser.read(self.get_configuration_file())
 
-        if self.name in parser.sections():
-            config = parser[self.name]
+        if provider in parser.sections():
+            config = parser[provider]
             name, url = config['name'], config['url']
         return name, url
 
+    def save_configuration(self, provider, name, url):
+        """ Save configuration to file
+        """
+        #FIXME: Check provider use
+        
+        parser = configparser.ConfigParser(strict=False, interpolation=None)
+        parser.add_section(provider)
+
+        config_file = self.get_configuration_file()
+
+        if config_file.exists():
+            parser.read(config_file)
+
+        parser[provider] = {'name': name, 'url': url}
+
+        with open(self.get_configuration_file(), 'w') as configfile:
+            parser.write(configfile)

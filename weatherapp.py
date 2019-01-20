@@ -142,21 +142,6 @@ def get_rp5_cities(cities_url, refresh=False):
     return cities
 
 
-def save_configuration(provider, name, url):
-    """ Save configuration to file
-    """
-    parser = configparser.ConfigParser(strict=False, interpolation=None)
-    parser.add_section(provider)
-
-    config_file = get_configuration_file()
-
-    if config_file.exists():
-        parser.read(config_file)
-
-    parser[provider] = {'name': name, 'url': url}
-
-    with open(get_configuration_file(), 'w') as configfile:
-        parser.write(configfile)
 
 
 def configurate(refresh=False):
