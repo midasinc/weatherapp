@@ -1,8 +1,9 @@
 """ Weather providers
 """
+import hashlib
+import configparser
 
 from pathlib import Path
-import configparser
 
 import config
 
@@ -63,6 +64,13 @@ class AccuWeatherProvider:
         """
 
         return {'User-Agent': config.FAKE_MOZILLA_AGENT}
+
+    def get_url_hash(self, url):
+        """ Generate url hash.
+        """
+
+        return hashlib.md5(url.encode('utf-8')).hexdigest()
+
 
 
 

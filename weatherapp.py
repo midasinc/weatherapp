@@ -39,11 +39,6 @@ def get_cache_directory():
     return Path.cwd() / CACHE_DIR
 
 
-def get_url_hash(url):
-    """ Generate url hash.
-    """
-
-    return hashlib.md5(url.encode('utf-8')).hexdigest()
 
 
 def is_valid(path):
