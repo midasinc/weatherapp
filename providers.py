@@ -1,6 +1,9 @@
 """ Weather providers
 """
+
+from pathlib import Path
 import configparser
+
 import config
 
 
@@ -16,6 +19,11 @@ class AccuWeatherProvider:
         self.location = location
         self.url = url
 
+    def get_configuration_file(self):
+        """ Getting the path to the configuration file
+        """
+        return Path.cwd() / config.CONFIG_FILE
+
     def get_configuration(self):
         """ Get configuration from file
         """
@@ -30,3 +38,4 @@ class AccuWeatherProvider:
             config = parser[self.name]
             name, url = config['name'], config['url']
         return name, url
+

@@ -142,12 +142,6 @@ def get_rp5_cities(cities_url, refresh=False):
     return cities
 
 
-def get_configuration_file():
-    """ Getting the path to the configuration file
-    """
-    return Path.cwd() / CONFIG_FILE
-
-
 def save_configuration(provider, name, url):
     """ Save configuration to file
     """
