@@ -2,6 +2,8 @@
 """
 import hashlib
 import configparser
+import time
+
 
 from pathlib import Path
 
@@ -70,6 +72,47 @@ class AccuWeatherProvider:
         """
 
         return hashlib.md5(url.encode('utf-8')).hexdigest()
+
+
+    def get_cache_directory(self):
+        """ Path to cache directory
+        """
+        return Path.cwd() / config.CACHE_DIR
+ 
+
+    def is_valid(self, path):
+        """ Check if current cache file is valid
+        """
+
+        return (time.time() - path.stat().st_mtime) < config.CACHE_TIME
+
+
+    def get_cache(self, url):
+        """ Return cache by given url address if any.
+        """
+
+        cache = b''
+        url_hash = self.get_url_hash(url)
+        cache_dir = self.get_cache_directory()
+        if cache_dir.exists():
+            cache_path = cache_dir / url_hash
+            if cache_path.exists() and self.is_valid(cache_path):
+                with cache_path.open('rb') as cache_file:
+                    cache = cache_file.read()
+        return cache
+
+
+    def save_cache(self, url, page_source):
+        """ Save page source data to file
+        """
+        url_hash = self.get_url_hash(url)
+        cache_dir = self.get_cache_directory()
+        if not cache_dir.exists():
+            cache_dir.mkdir(parents=True)
+
+        with (cache_dir / url_hash).open('wb') as cache_file:
+            cache_file.write(page_source)
+
 
 
 

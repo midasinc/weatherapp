@@ -33,46 +33,6 @@ import requests
 
 
 
-def get_cache_directory():
-    """ Path to cache directory
-    """
-    return Path.cwd() / CACHE_DIR
-
-
-
-
-def is_valid(path):
-    """ Check if current cache file is valid
-    """
-
-    return (time.time() - path.stat().st_mtime) < CACHE_TIME
-
-
-def get_cache(url):
-    """ Return cache by given url address if any.
-    """
-
-    cache = b''
-    url_hash = get_url_hash(url)
-    cache_dir = get_cache_directory()
-    if cache_dir.exists():
-        cache_path = cache_dir / url_hash
-        if cache_path.exists() and is_valid(cache_path):
-            with cache_path.open('rb') as cache_file:
-                cache = cache_file.read()
-    return cache
-
-
-def save_cache(url, page_source):
-    """ Save page source data to file
-    """
-    url_hash = get_url_hash(url)
-    cache_dir = get_cache_directory()
-    if not cache_dir.exists():
-        cache_dir.mkdir(parents=True)
-
-    with (cache_dir / url_hash).open('wb') as cache_file:
-        cache_file.write(page_source)
 
 
 def get_page_source(url, refresh=False):
