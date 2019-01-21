@@ -4,6 +4,8 @@ import hashlib
 import configparser
 import time
 from pathlib import Path
+from bs4 import BeautifulSoup
+
 
 import requests
 
@@ -127,6 +129,21 @@ class AccuWeatherProvider:
             self.save_cache(url, page_source)
 
         return page_source.decode('utf-8')
+
+    def get_accu_locations(self, locations_url, refresh=False):
+        """Getting a list of cities for ACCU provider 
+        """
+        locations_page = self.get_page_source(locations_url, refresh=refresh)
+        soup = BeautifulSoup(locations_page, 'lxml')
+
+        locations = []
+        for location in soup.find_all('li', {'class': 'drilldown cl'}):
+            url = location.find('a').attrs['href']
+            location = location.find('em').text
+            locations.append((location, url))
+        return locations
+
+
 
 
 

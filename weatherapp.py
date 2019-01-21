@@ -31,20 +31,6 @@ from urllib.parse import quote
 import requests
 
 
-def get_accu_locations(locations_url, refresh=False):
-    """Getting a list of cities for ACCU provider 
-    """
-    locations_page = get_page_source(locations_url, refresh=refresh)
-    soup = BeautifulSoup(locations_page, 'lxml')
-
-    locations = []
-    for location in soup.find_all('li', {'class': 'drilldown cl'}):
-        url = location.find('a').attrs['href']
-        location = location.find('em').text
-        locations.append((location, url))
-    return locations
-
-
 def get_rp5_countries(locations_url, refresh=False):
     """Getting a list of countries for RP5 provider 
     """
