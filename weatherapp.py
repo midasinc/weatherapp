@@ -31,25 +31,6 @@ from urllib.parse import quote
 import requests
 
 
-
-
-
-
-def get_page_source(url, refresh=False):
-    """ Returns the contents of the page at the specified URL
-    """
-
-    cache = get_cache(url)
-    if cache and not refresh:
-        page_source = cache
-    else:
-        page = requests.get(url, headers=get_request_headers())
-        page_source = page.content
-        save_cache(url, page_source)
-
-    return page_source.decode('utf-8')
-
-
 def get_accu_locations(locations_url, refresh=False):
     """Getting a list of cities for ACCU provider 
     """
