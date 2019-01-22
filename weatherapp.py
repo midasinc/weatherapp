@@ -67,6 +67,7 @@ def get_rp5_cities(cities_url, refresh=False):
 def configurate(refresh=False):
     """Creating a configuration
     """
+    #TODO: use for rp5
     print('1. AccuWeather \n2. RP5 ')
     num_provider = int(input('Please select provider: '))
 
@@ -128,7 +129,8 @@ def save_weather_to_file(provider, city_name, info):
 def get_weather_info(command, page_content, refresh=False):
     """ Receiving the current weather data
     """
-
+    #TODO: use for rp5
+    
     def get_weather_info_accu(city_page, refresh=False):
         """ Getting data about the current weather for AccuWeather    
         """

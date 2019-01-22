@@ -143,6 +143,19 @@ class AccuWeatherProvider:
             locations.append((location, url))
         return locations
 
+    def configurate(self, refresh=False):
+        """Creating a configuration
+        """
+        provider = config.ACCU_PROVIDER_NAME
+        locations = self.get_accu_locations(config.ACCU_BROWSE_LOCATIONS, refresh=refresh)
+        while locations:
+            for index, location in enumerate(locations):
+                print(f'{index + 1}, {location[0]}')
+            selected_index = int(input('Please select location: '))
+            location = locations[selected_index - 1]
+            locations = self.get_accu_locations(location[1], refresh=refresh)
+
+        self.save_configuration(provider, *location)
 
 
 
