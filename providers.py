@@ -20,8 +20,7 @@ class AccuWeatherProvider:
     def __init__(self):
         self.name = config.ACCU_PROVIDER_NAME
         
-        #TODO: check url, location <=> name, url
-        url, location = self.get_configuration()
+        location, url = self.get_configuration()
         self.location = location
         self.url = url
 

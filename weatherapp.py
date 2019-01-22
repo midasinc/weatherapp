@@ -21,163 +21,7 @@ import sys
 import html
 import argparse
 
-
-# def get_rp5_countries(locations_url, refresh=False):
-#     """Getting a list of countries for RP5 provider 
-#     """
-#     #TODO: use for rp5
-
-#     locations_page = get_page_source(locations_url, refresh=refresh)
-#     soup = BeautifulSoup(locations_page, 'lxml')
-
-#     countries = []
-#     for location in soup.find_all('div', class_='country_map_links'):
-#         url = ADD_URL + quote(location.find('a').attrs['href'])
-#         location = location.find('a').text
-#         countries.append((location, url))
-#     return countries
-
-
-# def get_rp5_cities(cities_url, refresh=False):
-#     """Getting a list of cities for RP5 provider 
-#     """
-#     #TODO: use for rp5
-
-#     locations_page = get_page_source(cities_url, refresh=refresh)
-#     soup = BeautifulSoup(locations_page, 'lxml')
-
-#     cities = []
-#     cities_map = soup.find('div', class_='countryMap')
-#     if cities_map:
-#         for city in cities_map.find_all('h3'):
-#             url = ADD_URL + quote(city.find('a').attrs['href'])
-#             city = city.find('a').text
-#             cities.append((city, url))
-
-#     return cities
-
-
-
-
-# def configurate(refresh=False):
-#     """Creating a configuration
-#     """
-#     #TODO: use for rp5
-#     print('1. AccuWeather \n2. RP5 ')
-#     num_provider = int(input('Please select provider: '))
-
-#     if num_provider == 1:
-#         browse_locations = ACCU_BROWSE_LOCATIONS
-#         provider = 'accu'
-#         locations = get_accu_locations(browse_locations, refresh=refresh)
-#         while locations:
-#             for index, location in enumerate(locations):
-#                 print(f'{index + 1}, {location[0]}')
-#             selected_index = int(input('Please select location: '))
-#             location = locations[selected_index - 1]
-#             locations = get_accu_locations(location[1], refresh=refresh)
-#     elif num_provider == 2:
-#         browse_locations = RP5_BROWSE_LOCATIONS
-#         provider = 'rp5'
-#         countries = get_rp5_countries(browse_locations, refresh=refresh)
-#         for index, country in enumerate(countries):
-#             print(f'{index + 1}, {country[0]}')
-#         selected_index = int(input('Please select location: '))
-#         country = countries[selected_index - 1]
-
-#         cities = get_rp5_cities(country[1], refresh=refresh)
-#         for index, city in enumerate(cities):
-#             print(f'{index + 1}. {city[0]}')
-#         selected_index = int(input('Please select city: '))
-#         location = cities[selected_index - 1]
-#     else:
-#         print('Unknown weather provider')
-#         sys.exit(1)
-
-#     save_configuration(provider, *location)
-
-
-
-
-# def get_weather_info(command, page_content, refresh=False):
-#     """ Receiving the current weather data
-#     """
-#     #TODO: use for rp5
-
-#     def get_weather_info_accu(city_page, refresh=False):
-#         """ Getting data about the current weather for AccuWeather    
-#         """
-#         current_day_section = \
-#             city_page.find('li', class_='day current first cl')
-#         if current_day_section == None:
-#             current_day_section = \
-#                 city_page.find('li', class_=re.compile('(day|night) current first cl'))
-
-#         weather_info_accu = {}
-#         current_day_url = current_day_section.find('a').attrs['href']
-#         if current_day_url:
-#             current_day_page = get_page_source(
-#                 current_day_url, refresh=refresh)
-#             if current_day_page:
-#                 current_day = \
-#                     BeautifulSoup(current_day_page, "lxml")
-#                 weather_details = \
-#                     current_day.find('div', attrs={'id': 'detail-now'})
-#                 condition = weather_details.find('span', class_='cond')
-#                 if condition:
-#                     weather_info_accu['cond'] = condition.text
-#                 temp = weather_details.find('span', class_='large-temp')
-#                 if temp:
-#                     weather_info_accu['temp'] = temp.text
-#                 feal_temp = weather_details.find('span', class_='small-temp')
-#                 if feal_temp:
-#                     weather_info_accu['feal_temp'] = feal_temp.text.replace(
-#                         'RealFeel® ', '')
-#                 wind_info = weather_details.find_all('li', class_='wind')
-#                 if wind_info:
-#                     weather_info_accu['wind'] = \
-#                         ' '.join(map(lambda t: t.text.strip(), wind_info))
-#         return weather_info_accu
-
-#     def get_weather_info_rp5(city_page):
-#         """ Getting data about the current weather for RP5    
-#         """
-
-#         current_day_section = \
-#             city_page.find('div', attrs={'id': 'archiveString'})
-#         weather_info_rp5 = {}
-#         condition = \
-#             str(current_day_section.find('span', class_='wv_0').previous)
-#         if condition:
-#             condition = condition.split(', ')
-#             weather_info_rp5['cond'] = condition[1]
-#         temp = current_day_section.find('span', class_='t_0')
-#         if temp:
-#             weather_info_rp5['temp'] = temp.text
-#         feal_temp = current_day_section.find('div', class_='TempStr')
-#         if feal_temp:
-#             weather_info_rp5['feal_temp'] = feal_temp.text
-#         wind_info_section = str(
-#             current_day_section.find('div',
-#                                      class_='ArchiveInfo').text).split(', ')
-#         wind_velocity = \
-#             str(current_day_section.find('span', class_='wv_1'
-#                                         ).text).replace('(','').replace(')','')
-#         wind_direction = wind_info_section[5]
-#         if wind_velocity and wind_direction:
-#             weather_info_rp5['wind'] = \
-#                 'Вітер' + wind_velocity + ', ' + wind_direction
-#         return weather_info_rp5
-
-#     city_page = BeautifulSoup(page_content, "lxml")
-#     weather_info = {}
-#     if command == 'accu':
-#         weather_info = get_weather_info_accu(city_page, refresh=False)
-#     if command == 'rp5':
-#         weather_info = get_weather_info_rp5(city_page)
-
-#     return weather_info
-
+from providers import AccuWeatherProvider
 
 def produce_output(provider, city_name, info):
     """ Output of the received data
@@ -191,15 +35,17 @@ def produce_output(provider, city_name, info):
 
 
 def get_provider_weather_info(provider, refresh=False):
-    """ Getting the name of the city and URL from the configuration file.
+    """ Getting the name of the city and URL from the configuration file.     
         Getting information about the weather for the city.
         Output weather conditions for a specified city.
     """
-    city_name, city_url = get_configuration(provider)
-    content = get_page_source(city_url, refresh=refresh)
-    produce_output(provider, city_name,
-                   get_weather_info(provider, content, refresh=refresh))
 
+    if provider == 'accu':
+        accu = AccuWeatherProvider()
+        produce_output(accu.location, accu.run(refresh=refresh))
+    else:
+        print("Unknown weather provider!")
+        sys.exit(1)
 
 def main(argv):
     """ Main entry point.
@@ -209,8 +55,8 @@ def main(argv):
     KNOWN_COMMANDS = {
         'accu': get_provider_weather_info,
         'rp5': get_provider_weather_info,
-        'config': configurate,
-        'savef': save_weather_info
+        # 'config': configurate,
+        # 'savef': save_weather_info
     }
 
     parser = argparse.ArgumentParser()
