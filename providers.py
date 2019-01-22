@@ -3,6 +3,7 @@
 import hashlib
 import configparser
 import time
+import re
 from pathlib import Path
 from bs4 import BeautifulSoup
 
@@ -159,5 +160,37 @@ class AccuWeatherProvider:
 
 
 
+    def get_weather_info(self, command, page_content, refresh=False):
+        """ Receiving the current weather data
+        """
+        city_page = BeautifulSoup(page_content, "lxml")
+        current_day_section = city_page.find(
+            'li', class_=re.compile('(day|night) current first cl'))
+
+        weather_info = {}
+        current_day_url = current_day_section.find('a').attrs['href']
+        if current_day_url:
+            current_day_page = self.get_page_source(
+                current_day_url, refresh=refresh)
+            if current_day_page:
+                current_day = \
+                    BeautifulSoup(current_day_page, "lxml")
+                weather_details = \
+                    current_day.find('div', attrs={'id': 'detail-now'})
+                condition = weather_details.find('span', class_='cond')
+                if condition:
+                    weather_info['cond'] = condition.text
+                temp = weather_details.find('span', class_='large-temp')
+                if temp:
+                    weather_info['temp'] = temp.text
+                feal_temp = weather_details.find('span', class_='small-temp')
+                if feal_temp:
+                    weather_info['feal_temp'] = feal_temp.text.replace(
+                        'RealFeel® ', '')
+                wind_info = weather_details.find_all('li', class_='wind')
+                if wind_info:
+                    weather_info['wind'] = \
+                        ' '.join(map(lambda t: t.text.strip(), wind_info))
+        return weather_info
 
 
