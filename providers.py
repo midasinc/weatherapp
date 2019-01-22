@@ -194,3 +194,6 @@ class AccuWeatherProvider:
         return weather_info
 
 
+    def run(self, refresh=False):
+        content = self.get_page_source(self.url, refresh=refresh)
+        return self.get_weather_info(content, refresh=refresh)
