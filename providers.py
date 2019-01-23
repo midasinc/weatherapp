@@ -1,14 +1,15 @@
+#!/usr/bin/env python
+
 """ Weather providers
 """
-import hashlib
 import configparser
-import time
+import hashlib
 import re
+import time
 from pathlib import Path
-from bs4 import BeautifulSoup
-
 
 import requests
+from bs4 import BeautifulSoup
 
 import config
 
@@ -16,10 +17,9 @@ import config
 class AccuWeatherProvider:
     """ Weather provider for AccuWeather site.
     """
-    
+
     def __init__(self):
         self.name = config.ACCU_PROVIDER_NAME
-        
         location, url = self.get_configuration()
         self.location = location
         self.url = url
@@ -29,27 +29,28 @@ class AccuWeatherProvider:
         """
         return Path.cwd() / config.CONFIG_FILE
 
-    def get_configuration(self, provider):
+    def get_configuration(self):
         """ Get configuration from file
         """
-        #FIXME: Check provider use
 
-        name = config.DEFAULT_NAME
+        provider = self.name
+        place_name = config.DEFAULT_NAME
         url = config.ACCU_DEFAULT_URL
+
         parser = configparser.ConfigParser(strict=False, interpolation=None)
 
         parser.read(self.get_configuration_file())
 
         if provider in parser.sections():
-            config = parser[provider]
-            name, url = config['name'], config['url']
-        return name, url
+            location_config = parser[provider]
+            place_name, url = location_config['name'], location_config['url']
+        return place_name, url
 
     def save_configuration(self, provider, name, url):
         """ Save configuration to file
         """
-        #FIXME: Check provider use
-        
+        # FIXME: Check provider use
+
         parser = configparser.ConfigParser(strict=False, interpolation=None)
         parser.add_section(provider)
 
@@ -75,19 +76,16 @@ class AccuWeatherProvider:
 
         return hashlib.md5(url.encode('utf-8')).hexdigest()
 
-
     def get_cache_directory(self):
         """ Path to cache directory
         """
         return Path.cwd() / config.CACHE_DIR
- 
 
     def is_valid(self, path):
         """ Check if current cache file is valid
         """
 
         return (time.time() - path.stat().st_mtime) < config.CACHE_TIME
-
 
     def get_cache(self, url):
         """ Return cache by given url address if any.
@@ -103,7 +101,6 @@ class AccuWeatherProvider:
                     cache = cache_file.read()
         return cache
 
-
     def save_cache(self, url, page_source):
         """ Save page source data to file
         """
@@ -114,7 +111,6 @@ class AccuWeatherProvider:
 
         with (cache_dir / url_hash).open('wb') as cache_file:
             cache_file.write(page_source)
-
 
     def get_page_source(self, url, refresh=False):
         """ Returns the contents of the page at the specified URL
@@ -146,8 +142,9 @@ class AccuWeatherProvider:
     def configurate(self, refresh=False):
         """Creating a configuration
         """
-        provider = config.ACCU_PROVIDER_NAME
-        locations = self.get_accu_locations(config.ACCU_BROWSE_LOCATIONS, refresh=refresh)
+        provider = self.name
+        locations = self.get_accu_locations(
+            config.ACCU_BROWSE_LOCATIONS, refresh=refresh)
         while locations:
             for index, location in enumerate(locations):
                 print(f'{index + 1}, {location[0]}')
@@ -157,9 +154,7 @@ class AccuWeatherProvider:
 
         self.save_configuration(provider, *location)
 
-
-
-    def get_weather_info(self, command, page_content, refresh=False):
+    def get_weather_info(self, page_content, refresh=False):
         """ Receiving the current weather data
         """
         city_page = BeautifulSoup(page_content, "lxml")
@@ -198,9 +193,8 @@ class AccuWeatherProvider:
 
         city_name, city_url = self.get_configuration(provider)
         content = self.get_page_source(city_url)
-        self.save_weather_to_file(
-            provider, city_name, self.get_weather_info(provider, content))
-
+        self.save_weather_to_file(provider, city_name,
+                                  self.get_weather_info(provider, content))
 
     def save_weather_to_file(self, provider, city_name, info):
         """ Save the weather forecast from Accuweather to a file
@@ -214,7 +208,6 @@ class AccuWeatherProvider:
                 f.write(f'\n{key}: {html.unescape(value)}')
             print('\nFile weather.txt has been saved to:')
             print(path_to_wapp)
-
 
     def run(self, refresh=False):
         content = self.get_page_source(self.url, refresh=refresh)

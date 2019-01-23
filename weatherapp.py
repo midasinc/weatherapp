@@ -17,17 +17,19 @@ savef - save weather to file. The command is used together with `accu`, 'rp5'
             `accu`, 'rp5' and 'config'.
 """
 
-import sys
-import html
 import argparse
+import html
+import sys
 
+import config
 from providers import AccuWeatherProvider
+
 
 def produce_output(provider, city_name, info):
     """ Output of the received data
     """
 
-    print(f'\nProvider: {PROVIDER_NAME[provider]}\n')
+    print(f'\nProvider: {config.PROVIDER_NAME[provider]}\n')
     print(f'City: {city_name}')
     print('-' * 20)
     for key, value in info.items():
@@ -42,10 +44,11 @@ def get_provider_weather_info(provider, refresh=False):
 
     if provider == 'accu':
         accu = AccuWeatherProvider()
-        produce_output(accu.location, accu.run(refresh=refresh))
+        produce_output(provider, accu.location, accu.run(refresh=refresh))
     else:
         print("Unknown weather provider!")
         sys.exit(1)
+
 
 def main(argv):
     """ Main entry point.
