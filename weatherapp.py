@@ -25,6 +25,22 @@ import config
 from providers import AccuWeatherProvider
 
 
+def configuration(refresh=False):
+    """Creating a configuration
+    """
+
+    print('1. AccuWeather \n2. RP5 ')
+    num_provider = int(input('Please select provider: '))
+
+    if num_provider == 1:
+        accu_conf = AccuWeatherProvider()
+        accu_conf.configurate(refresh=refresh)
+
+    else:
+        print('Unknown weather provider')
+        sys.exit(1)
+
+
 def produce_output(provider, city_name, info):
     """ Output of the received data
     """
@@ -58,7 +74,7 @@ def main(argv):
     KNOWN_COMMANDS = {
         'accu': get_provider_weather_info,
         'rp5': get_provider_weather_info,
-        # 'config': configurate,
+        'config': configuration,
         # 'savef': save_weather_info
     }
 

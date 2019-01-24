@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """ Weather providers
 """
 import configparser
@@ -63,6 +62,21 @@ class AccuWeatherProvider:
 
         with open(self.get_configuration_file(), 'w') as configfile:
             parser.write(configfile)
+
+    def configurate(self, refresh=False):
+        """Creating a configuration
+        """
+        provider = self.name
+        locations = self.get_accu_locations(
+            config.ACCU_BROWSE_LOCATIONS, refresh=refresh)
+        while locations:
+            for index, location in enumerate(locations):
+                print(f'{index + 1}, {location[0]}')
+            selected_index = int(input('Please select location: '))
+            location = locations[selected_index - 1]
+            locations = self.get_accu_locations(location[1], refresh=refresh)
+
+        self.save_configuration(provider, *location)
 
     def get_request_headers(self):
         """ Return custom headers for url requests.
@@ -138,21 +152,6 @@ class AccuWeatherProvider:
             location = location.find('em').text
             locations.append((location, url))
         return locations
-
-    def configurate(self, refresh=False):
-        """Creating a configuration
-        """
-        provider = self.name
-        locations = self.get_accu_locations(
-            config.ACCU_BROWSE_LOCATIONS, refresh=refresh)
-        while locations:
-            for index, location in enumerate(locations):
-                print(f'{index + 1}, {location[0]}')
-            selected_index = int(input('Please select location: '))
-            location = locations[selected_index - 1]
-            locations = self.get_accu_locations(location[1], refresh=refresh)
-
-        self.save_configuration(provider, *location)
 
     def get_weather_info(self, page_content, refresh=False):
         """ Receiving the current weather data
