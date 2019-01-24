@@ -48,7 +48,6 @@ class AccuWeatherProvider:
     def save_configuration(self, provider, name, url):
         """ Save configuration to file
         """
-        # FIXME: Check provider use
 
         parser = configparser.ConfigParser(strict=False, interpolation=None)
         parser.add_section(provider)
@@ -218,65 +217,71 @@ class Rp5WeatherProvider:
     """
 
     def __init__(self):
-        self.name = config.ACCU_PROVIDER_NAME
+        self.name = config.RP5_PROVIDER_NAME
         location, url = self.get_configuration()
         self.location = location
         self.url = url
 
-    # def get_configuration_file(self):
-    #     """ Getting the path to the configuration file
-    #     """
-    #     return Path.cwd() / config.CONFIG_FILE
+    def get_configuration_file(self):
+        """ Getting the path to the configuration file
+        """
+        return Path.cwd() / config.CONFIG_FILE
 
-    # def get_configuration(self):
-    #     """ Get configuration from file
-    #     """
+    def get_configuration(self):
+        """ Get configuration from file
+        """
 
-    #     provider = self.name
-    #     place_name = config.DEFAULT_NAME
-    #     url = config.ACCU_DEFAULT_URL
+        provider = self.name
+        place_name = config.DEFAULT_NAME
+        url = config.RP5_DEFAULT_URL
 
-    #     parser = configparser.ConfigParser(strict=False, interpolation=None)
+        parser = configparser.ConfigParser(strict=False, interpolation=None)
 
-    #     parser.read(self.get_configuration_file())
+        parser.read(self.get_configuration_file())
 
-    #     if provider in parser.sections():
-    #         location_config = parser[provider]
-    #         place_name, url = location_config['name'], location_config['url']
-    #     return place_name, url
+        if provider in parser.sections():
+            location_config = parser[provider]
+            place_name, url = location_config['name'], location_config['url']
+        return place_name, url
 
-    # def save_configuration(self, provider, name, url):
-    #     """ Save configuration to file
-    #     """
-    #     # FIXME: Check provider use
+    def save_configuration(self, provider, name, url):
+        """ Save configuration to file
+        """
 
-    #     parser = configparser.ConfigParser(strict=False, interpolation=None)
-    #     parser.add_section(provider)
+        parser = configparser.ConfigParser(strict=False, interpolation=None)
+        parser.add_section(provider)
 
-    #     config_file = self.get_configuration_file()
+        config_file = self.get_configuration_file()
 
-    #     if config_file.exists():
-    #         parser.read(config_file)
+        if config_file.exists():
+            parser.read(config_file)
 
-    #     parser[provider] = {'name': name, 'url': url}
+        parser[provider] = {'name': name, 'url': url}
 
-    #     with open(self.get_configuration_file(), 'w') as configfile:
-    #         parser.write(configfile)
+        with open(self.get_configuration_file(), 'w') as configfile:
+            parser.write(configfile)
 
-    # def configurate(self, refresh=False):
-    #     """Creating a configuration
-    #     """
-    #     provider = self.name
-    #     locations = self.get_accu_locations(
-    #         config.ACCU_BROWSE_LOCATIONS, refresh=refresh)
-    #     while locations:
-    #         for index, location in enumerate(locations):
-    #             print(f'{index + 1}, {location[0]}')
-    #         selected_index = int(input('Please select location: '))
-    #         location = locations[selected_index - 1]
-    #         locations = self.get_accu_locations(location[1], refresh=refresh)
+    def configurate(self, refresh=False):
+        """Creating a configuration
+        """
 
-    #     self.save_configuration(provider, *location)
+        provider = self.name
+
+        browse_locations = config.RP5_BROWSE_LOCATIONS
+        provider = 'rp5'
+        countries = self.get_rp5_countries(browse_locations, refresh=refresh)
+        for index, country in enumerate(countries):
+            print(f'{index + 1}, {country[0]}')
+        selected_index = int(input('Please select location: '))
+        country = countries[selected_index - 1]
+
+        cities = self.get_rp5_cities(country[1], refresh=refresh)
+        for index, city in enumerate(cities):
+            print(f'{index + 1}. {city[0]}')
+        selected_index = int(input('Please select city: '))
+        location = cities[selected_index - 1]
+
+        self.save_configuration(provider, *location)
 
     # def get_request_headers(self):
     #     """ Return custom headers for url requests.
@@ -341,7 +346,7 @@ class Rp5WeatherProvider:
     #     return page_source.decode('utf-8')
 
     # def get_accu_locations(self, locations_url, refresh=False):
-    #     """Getting a list of cities for ACCU provider 
+    #     """Getting a list of cities for ACCU provider
     #     """
     #     locations_page = self.get_page_source(locations_url, refresh=refresh)
     #     soup = BeautifulSoup(locations_page, 'lxml')
