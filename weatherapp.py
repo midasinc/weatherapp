@@ -75,7 +75,7 @@ def main(argv):
         'accu': get_provider_weather_info,
         'rp5': get_provider_weather_info,
         'config': configuration,
-        # 'savef': save_weather_info
+        # 'savef': save_weather_info FIXME:
     }
 
     parser = argparse.ArgumentParser()

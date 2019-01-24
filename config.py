@@ -13,6 +13,7 @@ ACCU_DEFAULT_URL = (
 ACCU_BROWSE_LOCATIONS = 'https://www.accuweather.com/uk/browse-locations'
 
 # RP5 section
+RP5_PROVIDER_NAME = 'rp5'
 RP5_URL = (
     'http://rp5.ua/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%94%D0%BD%D1'
     '%96%D0%BF%D1%80%D1%96_%28%D0%94%D0%BD%D1%96%D0%BF%D1%80%D0%BE%D0%BF%D0%B5'
