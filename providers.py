@@ -284,53 +284,53 @@ class Rp5WeatherProvider:
 
         self.save_configuration(provider, *location)
 
-    # def get_request_headers(self):
-    #     """ Return custom headers for url requests.
-    #     """
+    def get_request_headers(self):
+        """ Return custom headers for url requests.
+        """
 
-    #     return {'User-Agent': config.FAKE_MOZILLA_AGENT}
+        return {'User-Agent': config.FAKE_MOZILLA_AGENT}
 
-    # def get_url_hash(self, url):
-    #     """ Generate url hash.
-    #     """
+    def get_url_hash(self, url):
+        """ Generate url hash.
+        """
 
-    #     return hashlib.md5(url.encode('utf-8')).hexdigest()
+        return hashlib.md5(url.encode('utf-8')).hexdigest()
 
-    # def get_cache_directory(self):
-    #     """ Path to cache directory
-    #     """
-    #     return Path.cwd() / config.CACHE_DIR
+    def get_cache_directory(self):
+        """ Path to cache directory
+        """
+        return Path.cwd() / config.CACHE_DIR
 
-    # def is_valid(self, path):
-    #     """ Check if current cache file is valid
-    #     """
+    def is_valid(self, path):
+        """ Check if current cache file is valid
+        """
 
-    #     return (time.time() - path.stat().st_mtime) < config.CACHE_TIME
+        return (time.time() - path.stat().st_mtime) < config.CACHE_TIME
 
-    # def get_cache(self, url):
-    #     """ Return cache by given url address if any.
-    #     """
+    def get_cache(self, url):
+        """ Return cache by given url address if any.
+        """
 
-    #     cache = b''
-    #     url_hash = self.get_url_hash(url)
-    #     cache_dir = self.get_cache_directory()
-    #     if cache_dir.exists():
-    #         cache_path = cache_dir / url_hash
-    #         if cache_path.exists() and self.is_valid(cache_path):
-    #             with cache_path.open('rb') as cache_file:
-    #                 cache = cache_file.read()
-    #     return cache
+        cache = b''
+        url_hash = self.get_url_hash(url)
+        cache_dir = self.get_cache_directory()
+        if cache_dir.exists():
+            cache_path = cache_dir / url_hash
+            if cache_path.exists() and self.is_valid(cache_path):
+                with cache_path.open('rb') as cache_file:
+                    cache = cache_file.read()
+        return cache
 
-    # def save_cache(self, url, page_source):
-    #     """ Save page source data to file
-    #     """
-    #     url_hash = self.get_url_hash(url)
-    #     cache_dir = self.get_cache_directory()
-    #     if not cache_dir.exists():
-    #         cache_dir.mkdir(parents=True)
+    def save_cache(self, url, page_source):
+        """ Save page source data to file
+        """
+        url_hash = self.get_url_hash(url)
+        cache_dir = self.get_cache_directory()
+        if not cache_dir.exists():
+            cache_dir.mkdir(parents=True)
 
-    #     with (cache_dir / url_hash).open('wb') as cache_file:
-    #         cache_file.write(page_source)
+        with (cache_dir / url_hash).open('wb') as cache_file:
+            cache_file.write(page_source)
 
     # def get_page_source(self, url, refresh=False):
     #     """ Returns the contents of the page at the specified URL
@@ -376,19 +376,6 @@ class Rp5WeatherProvider:
 
         return cities
 
-
-    # def get_accu_locations(self, locations_url, refresh=False):
-    #     """Getting a list of cities for ACCU provider
-    #     """
-    #     locations_page = self.get_page_source(locations_url, refresh=refresh)
-    #     soup = BeautifulSoup(locations_page, 'lxml')
-
-    #     locations = []
-    #     for location in soup.find_all('li', {'class': 'drilldown cl'}):
-    #         url = location.find('a').attrs['href']
-    #         location = location.find('em').text
-    #         locations.append((location, url))
-    #     return locations
 
     # def get_weather_info(self, page_content, refresh=False):
     #     """ Receiving the current weather data
