@@ -22,7 +22,7 @@ import html
 import sys
 
 import config
-from providers import AccuWeatherProvider
+from providers import AccuWeatherProvider, Rp5WeatherProvider
 
 
 def configuration(refresh=False):
@@ -35,6 +35,9 @@ def configuration(refresh=False):
     if num_provider == 1:
         accu_conf = AccuWeatherProvider()
         accu_conf.configurate(refresh=refresh)
+    if num_provider == 2:
+        rp5_conf = Rp5WeatherProvider()
+        rp5_conf.configurate(refresh=refresh)
 
     else:
         print('Unknown weather provider')
@@ -61,6 +64,9 @@ def get_provider_weather_info(provider, refresh=False):
     if provider == 'accu':
         accu = AccuWeatherProvider()
         produce_output(provider, accu.location, accu.run(refresh=refresh))
+    if provider == 'rp5':
+        rp5 = Rp5WeatherProvider()
+        produce_output(provider, rp5.location, rp5.run(refresh=refresh))
     else:
         print("Unknown weather provider!")
         sys.exit(1)
@@ -80,7 +86,8 @@ def main(argv):
 
     parser = argparse.ArgumentParser()
     parser.add_argument('command', help='Short name of provider', nargs=1)
-    parser.add_argument('--refresh', help='Update caches', action='store_true')
+    parser.add_argument(
+        '--refresh', help='Update caches', action='store_true')
     parser.add_argument(
         'command2', help='Save weather info to file', nargs='?')
     params = parser.parse_args(argv)

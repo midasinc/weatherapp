@@ -395,6 +395,7 @@ class Rp5WeatherProvider:
         feal_temp = current_day_section.find('div', class_='TempStr')
         if feal_temp:
             weather_info_rp5['feal_temp'] = feal_temp.text
+        #TODO: Improve the selection of information in the section "Wind"
         wind_info_section = str(
             current_day_section.find('div',
                                      class_='ArchiveInfo').text).split(', ')
