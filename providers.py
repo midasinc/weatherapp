@@ -410,28 +410,28 @@ class Rp5WeatherProvider:
     #                     ' '.join(map(lambda t: t.text.strip(), wind_info))
     #     return weather_info
 
-    # def save_weather_info(self, provider):
-    #     """ Saving weather forecast to file
-    #     """
+    def save_weather_info(self, provider):
+        """ Saving weather forecast to file
+        """
 
-    #     city_name, city_url = self.get_configuration(provider)
-    #     content = self.get_page_source(city_url)
-    #     self.save_weather_to_file(provider, city_name,
-    #                               self.get_weather_info(provider, content))
+        city_name, city_url = self.get_configuration(provider)
+        content = self.get_page_source(city_url)
+        self.save_weather_to_file(provider, city_name,
+                                  self.get_weather_info(provider, content))
 
-    # def save_weather_to_file(self, provider, city_name, info):
-    #     """ Save the weather forecast from Accuweather to a file
-    #     """
-    #     path_to_wapp = Path.cwd()
-    #     with open(path_to_wapp / 'weather.txt', 'w') as f:
-    #         f.write(f'\nProvider: {config.PROVIDER_NAME[provider]}\n')
-    #         f.write(f'City: {city_name}\n')
-    #         f.write('-' * 20)
-    #         for key, value in info.items():
-    #             f.write(f'\n{key}: {html.unescape(value)}')
-    #         print('\nFile weather.txt has been saved to:')
-    #         print(path_to_wapp)
+    def save_weather_to_file(self, provider, city_name, info):
+        """ Save the weather forecast from RP5 to a file
+        """
+        path_to_wapp = Path.cwd()
+        with open(path_to_wapp / 'weather.txt', 'w') as f:
+            f.write(f'\nProvider: {config.PROVIDER_NAME[provider]}\n')
+            f.write(f'City: {city_name}\n')
+            f.write('-' * 20)
+            for key, value in info.items():
+                f.write(f'\n{key}: {html.unescape(value)}')
+            print('\nFile weather.txt has been saved to:')
+            print(path_to_wapp)
 
-    # def run(self, refresh=False):
-    #     content = self.get_page_source(self.url, refresh=refresh)
-    #     return self.get_weather_info(content, refresh=refresh)
+    def run(self, refresh=False):
+        content = self.get_page_source(self.url, refresh=refresh)
+        return self.get_weather_info(content, refresh=refresh)
