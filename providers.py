@@ -9,6 +9,7 @@ from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import quote
 
 import config
 
@@ -344,6 +345,37 @@ class Rp5WeatherProvider:
     #         self.save_cache(url, page_source)
 
     #     return page_source.decode('utf-8')
+
+    def get_rp5_countries(self, locations_url, refresh=False):
+        """Getting a list of countries for RP5 provider 
+        """
+        locations_page = self.get_page_source(locations_url, refresh=refresh)
+        soup = BeautifulSoup(locations_page, 'lxml')
+
+        countries = []
+        for location in soup.find_all('div', class_='country_map_links'):
+            url = config.ADD_URL + quote(location.find('a').attrs['href'])
+            location = location.find('a').text
+            countries.append((location, url))
+        return countries
+
+
+    def get_rp5_cities(self, cities_url, refresh=False):
+        """Getting a list of cities for RP5 provider 
+        """
+        locations_page = self.get_page_source(cities_url, refresh=refresh)
+        soup = BeautifulSoup(locations_page, 'lxml')
+
+        cities = []
+        cities_map = soup.find('div', class_='countryMap')
+        if cities_map:
+            for city in cities_map.find_all('h3'):
+                url = config.ADD_URL + quote(city.find('a').attrs['href'])
+                city = city.find('a').text
+                cities.append((city, url))
+
+        return cities
+
 
     # def get_accu_locations(self, locations_url, refresh=False):
     #     """Getting a list of cities for ACCU provider
