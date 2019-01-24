@@ -332,19 +332,19 @@ class Rp5WeatherProvider:
         with (cache_dir / url_hash).open('wb') as cache_file:
             cache_file.write(page_source)
 
-    # def get_page_source(self, url, refresh=False):
-    #     """ Returns the contents of the page at the specified URL
-    #     """
+    def get_page_source(self, url, refresh=False):
+        """ Returns the contents of the page at the specified URL
+        """
 
-    #     cache = self.get_cache(url)
-    #     if cache and not refresh:
-    #         page_source = cache
-    #     else:
-    #         page = requests.get(url, headers=self.get_request_headers())
-    #         page_source = page.content
-    #         self.save_cache(url, page_source)
+        cache = self.get_cache(url)
+        if cache and not refresh:
+            page_source = cache
+        else:
+            page = requests.get(url, headers=self.get_request_headers())
+            page_source = page.content
+            self.save_cache(url, page_source)
 
-    #     return page_source.decode('utf-8')
+        return page_source.decode('utf-8')
 
     def get_rp5_countries(self, locations_url, refresh=False):
         """Getting a list of countries for RP5 provider 
