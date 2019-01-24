@@ -377,38 +377,35 @@ class Rp5WeatherProvider:
         return cities
 
 
-    # def get_weather_info(self, page_content, refresh=False):
-    #     """ Receiving the current weather data
-    #     """
-    #     city_page = BeautifulSoup(page_content, "lxml")
-    #     current_day_section = city_page.find(
-    #         'li', class_=re.compile('(day|night) current first cl'))
-
-    #     weather_info = {}
-    #     current_day_url = current_day_section.find('a').attrs['href']
-    #     if current_day_url:
-    #         current_day_page = self.get_page_source(
-    #             current_day_url, refresh=refresh)
-    #         if current_day_page:
-    #             current_day = \
-    #                 BeautifulSoup(current_day_page, "lxml")
-    #             weather_details = \
-    #                 current_day.find('div', attrs={'id': 'detail-now'})
-    #             condition = weather_details.find('span', class_='cond')
-    #             if condition:
-    #                 weather_info['cond'] = condition.text
-    #             temp = weather_details.find('span', class_='large-temp')
-    #             if temp:
-    #                 weather_info['temp'] = temp.text
-    #             feal_temp = weather_details.find('span', class_='small-temp')
-    #             if feal_temp:
-    #                 weather_info['feal_temp'] = feal_temp.text.replace(
-    #                     'RealFeel® ', '')
-    #             wind_info = weather_details.find_all('li', class_='wind')
-    #             if wind_info:
-    #                 weather_info['wind'] = \
-    #                     ' '.join(map(lambda t: t.text.strip(), wind_info))
-    #     return weather_info
+    def get_weather_info(self, page_content, refresh=False):
+        """ Receiving the current weather data
+        """
+        city_page = BeautifulSoup(page_content, "lxml")
+        current_day_section = \
+            city_page.find('div', attrs={'id': 'archiveString'})
+        weather_info_rp5 = {}
+        condition = \
+            str(current_day_section.find('span', class_='wv_0').previous)
+        if condition:
+            condition = condition.split(', ')
+            weather_info_rp5['cond'] = condition[1]
+        temp = current_day_section.find('span', class_='t_0')
+        if temp:
+            weather_info_rp5['temp'] = temp.text
+        feal_temp = current_day_section.find('div', class_='TempStr')
+        if feal_temp:
+            weather_info_rp5['feal_temp'] = feal_temp.text
+        wind_info_section = str(
+            current_day_section.find('div',
+                                     class_='ArchiveInfo').text).split(', ')
+        wind_velocity = \
+            str(current_day_section.find('span', class_='wv_1'
+                                        ).text).replace('(','').replace(')','')
+        wind_direction = wind_info_section[5]
+        if wind_velocity and wind_direction:
+            weather_info_rp5['wind'] = \
+                'Вітер' + wind_velocity + ', ' + wind_direction
+        return weather_info_rp5
 
     def save_weather_info(self, provider):
         """ Saving weather forecast to file
