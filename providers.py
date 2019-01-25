@@ -186,16 +186,6 @@ class AccuWeatherProvider:
                         ' '.join(map(lambda t: t.text.strip(), wind_info))
         return weather_info
 
-        path_to_wapp = Path.cwd()
-        with open(path_to_wapp / 'weather.txt', 'w') as f:
-            f.write(f'\nProvider: {config.PROVIDER_NAME[provider]}\n')
-            f.write(f'City: {city_name}\n')
-            f.write('-' * 20)
-            for key, value in info.items():
-                f.write(f'\n{key}: {html.unescape(value)}')
-            print('\nFile weather.txt has been saved to:')
-            print(path_to_wapp)
-
     def run(self, refresh=False):
         content = self.get_page_source(self.url, refresh=refresh)
         return self.get_weather_info(content, refresh=refresh)
@@ -395,7 +385,6 @@ class Rp5WeatherProvider:
             weather_info_rp5['wind'] = \
                 'Вітер' + wind_velocity + ', ' + wind_direction
         return weather_info_rp5
-
 
     def run(self, refresh=False):
         content = self.get_page_source(self.url, refresh=refresh)
