@@ -337,7 +337,6 @@ class Rp5WeatherProvider:
             countries.append((location, url))
         return countries
 
-
     def get_rp5_cities(self, cities_url, refresh=False):
         """Getting a list of cities for RP5 provider 
         """
@@ -353,7 +352,6 @@ class Rp5WeatherProvider:
                 cities.append((city, url))
 
         return cities
-
 
     def get_weather_info(self, page_content, refresh=False):
         """ Receiving the current weather data

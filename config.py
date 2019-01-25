@@ -30,4 +30,4 @@ CONFIG_FILE = 'weatherapp.ini'
 
 # Cache section
 CACHE_DIR = '.wappcache'
-CACHE_TIME = 10
+CACHE_TIME = 100

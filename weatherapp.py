@@ -44,7 +44,8 @@ def configuration(refresh=False):
         print('Unknown weather provider')
         sys.exit(1)
 
-def save_to_file( provider, city_name, info):
+
+def save_to_file(provider, city_name, info):
     """ Save to file rercived data
     """
 
@@ -57,7 +58,7 @@ def save_to_file( provider, city_name, info):
             f.write(f'\n{key}: {html.unescape(value)}')
         print('\nFile weather.txt has been saved to:')
         print(path_to_file)
-    
+
 
 def save_provider_weather_info(provider, refresh=False):
     """ Save weather info to file
@@ -72,6 +73,7 @@ def save_provider_weather_info(provider, refresh=False):
     else:
         print("Unknown weather provider!")
         sys.exit(1)
+
 
 def produce_output(provider, city_name, info):
     """ Output of the received data
@@ -115,8 +117,7 @@ def main(argv):
 
     parser = argparse.ArgumentParser()
     parser.add_argument('command', help='Short name of provider', nargs=1)
-    parser.add_argument(
-        '--refresh', help='Update caches', action='store_true')
+    parser.add_argument('--refresh', help='Update caches', action='store_true')
     parser.add_argument(
         'command2', help='Save weather info to file', nargs='?')
     params = parser.parse_args(argv)
