@@ -20,6 +20,7 @@ savef - save weather to file. The command is used together with `accu`, 'rp5'
 import argparse
 import html
 import sys
+from pathlib import Path
 
 import config
 from providers import AccuWeatherProvider, Rp5WeatherProvider
@@ -35,7 +36,7 @@ def configuration(refresh=False):
     if num_provider == 1:
         accu_conf = AccuWeatherProvider()
         accu_conf.configurate(refresh=refresh)
-    if num_provider == 2:
+    elif num_provider == 2:
         rp5_conf = Rp5WeatherProvider()
         rp5_conf.configurate(refresh=refresh)
 
@@ -43,6 +44,34 @@ def configuration(refresh=False):
         print('Unknown weather provider')
         sys.exit(1)
 
+def save_to_file( provider, city_name, info):
+    """ Save to file rercived data
+    """
+
+    path_to_file = Path.cwd()
+    with open(path_to_file / 'weather.txt', 'w') as f:
+        f.write(f'\nProvider: {config.PROVIDER_NAME[provider]}\n')
+        f.write(f'City: {city_name}\n')
+        f.write('-' * 20)
+        for key, value in info.items():
+            f.write(f'\n{key}: {html.unescape(value)}')
+        print('\nFile weather.txt has been saved to:')
+        print(path_to_file)
+    
+
+def save_provider_weather_info(provider, refresh=False):
+    """ Save weather info to file
+    """
+
+    if provider == 'accu':
+        accu = AccuWeatherProvider()
+        save_to_file(provider, accu.location, accu.run(refresh=refresh))
+    elif provider == 'rp5':
+        rp5 = Rp5WeatherProvider()
+        save_to_file(provider, rp5.location, rp5.run(refresh=refresh))
+    else:
+        print("Unknown weather provider!")
+        sys.exit(1)
 
 def produce_output(provider, city_name, info):
     """ Output of the received data
@@ -64,7 +93,7 @@ def get_provider_weather_info(provider, refresh=False):
     if provider == 'accu':
         accu = AccuWeatherProvider()
         produce_output(provider, accu.location, accu.run(refresh=refresh))
-    if provider == 'rp5':
+    elif provider == 'rp5':
         rp5 = Rp5WeatherProvider()
         produce_output(provider, rp5.location, rp5.run(refresh=refresh))
     else:
@@ -81,7 +110,7 @@ def main(argv):
         'accu': get_provider_weather_info,
         'rp5': get_provider_weather_info,
         'config': configuration,
-        # 'savef': save_weather_info FIXME:
+        'savef': save_provider_weather_info
     }
 
     parser = argparse.ArgumentParser()
@@ -91,7 +120,6 @@ def main(argv):
     parser.add_argument(
         'command2', help='Save weather info to file', nargs='?')
     params = parser.parse_args(argv)
-
     if params.command:
         command = params.command[0]
         if command in KNOWN_COMMANDS:
