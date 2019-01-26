@@ -1,6 +1,6 @@
 """ Main application module
 """
-
+import sys
 from argparse  import ArgumentParser
 
 class App:
@@ -46,3 +46,18 @@ class App:
         print("="*40, end='\n\n')
 
 
+    def run(self, argv):
+        """Run application
+        
+        :param argv: list of passed arguments
+        """
+
+        self.options, remaining_args = self.arg_parser.parse_known_args(argv)
+        command_name = self.options.command
+
+        if not command_name:
+            # run all weather providers by default
+            pass
+        if command_name in {}:
+            # run specific provider
+            pass
