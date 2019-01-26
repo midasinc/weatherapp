@@ -25,3 +25,24 @@ class App:
         
         return arg_parser                               
 
+    def produce_output(self, title, location, info):
+        """Print results
+        
+        :param title: weather provider name
+        :type title: str
+        :param location: city name
+        :type location: str
+        :param info: weather conditions for the city 
+        :type info: dict
+        """
+
+        print(f'{title}:')
+        print("#"*10, end='\n\n')
+
+        print(f'{location}')
+        print("#"*20)
+        for key, value in info.items():
+            print(f'{key}: {value}')
+        print("="*40, end='\n\n')
+
+
