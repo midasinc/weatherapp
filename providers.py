@@ -360,8 +360,8 @@ class Rp5WeatherProvider:
         current_day_section = \
             city_page.find('div', attrs={'id': 'archiveString'})
         weather_info_rp5 = {}
-        condition = \
-            str(current_day_section.find('span', class_='wv_0').previous)
+        condition = str(
+            current_day_section.find('span', class_='wv_0').previous)
         if condition:
             condition = condition.split(', ')
             weather_info_rp5['cond'] = condition[1]
