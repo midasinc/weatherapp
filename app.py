@@ -61,3 +61,15 @@ class App:
         if command_name in {}:
             # run specific provider
             pass
+
+def main(argv=sys.argv[1:]):
+    """Main entry point
+    """
+    
+    return App().run(argv)
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
+
+    
