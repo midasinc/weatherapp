@@ -20,5 +20,8 @@ class App:
         arg_parser.add_argument('command', help="Command", nargs='?')
         arg_parser.add_argument('--refresh', help="Bypass caches", 
                                 action='store_true')
+        arg_parser.add_argument('command2', help="Save weather to file", 
+                                nargs='?')
+        
         return arg_parser                               
 
