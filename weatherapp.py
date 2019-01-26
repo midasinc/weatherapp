@@ -51,6 +51,7 @@ def save_to_file(provider, city_name, info):
 
     path_to_file = Path.cwd()
     with open(path_to_file / 'weather.txt', 'w') as f:
+        # FIXME: Fix multiple call write file for one.
         f.write(f'\nProvider: {config.PROVIDER_NAME[provider]}\n')
         f.write(f'City: {city_name}\n')
         f.write('-' * 20)
