@@ -13,7 +13,13 @@ from urllib.parse import quote
 
 import config
 
+class WeatherProvider():
+    """ Base weather provider
+    """
 
+    pass
+
+    
 class AccuWeatherProvider:
     """ Weather provider for AccuWeather site.
     """
