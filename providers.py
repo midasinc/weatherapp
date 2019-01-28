@@ -21,9 +21,9 @@ class WeatherProvider():
     def __init__(self, app):
         self.app = app
 
-        self.name = config.ACCU_PROVIDER_NAME  #FIXME:
+        # self.name = config.ACCU_PROVIDER_NAME  #FIXME:
 
-        location, url = self.get_configuration()
+        location, url = self._get_configuration()
         self.location = location
         self.url = url
 
@@ -119,12 +119,12 @@ class WeatherProvider():
         with (cache_dir / url_hash).open('wb') as cache_file:
             cache_file.write(page_source)
 
-    def get_page_source(self, url, refresh=False):
+    def get_page_source(self, url):
         """ Returns the contents of the page at the specified URL
         """
 
         cache = self.get_cache(url)
-        if cache and not refresh:
+        if cache and not self.app.options.refresh:
             page_source = cache
         else:
             page = requests.get(url, headers=self.get_request_headers())
@@ -133,15 +133,15 @@ class WeatherProvider():
 
         return page_source.decode('utf-8')
 
-    def run(self, refresh=False):
+    def run(self):
         """ Run provider
         """
 
-        content = self.get_page_source(self.url, refresh=refresh)
-        return self.get_weather_info(content, refresh=refresh)
+        content = self.get_page_source(self.url)
+        return self.get_weather_info(content)
 
 
-class AccuWeatherProvider:
+class AccuWeatherProvider(WeatherProvider):
     """ Weather provider for AccuWeather site.
     """
 
@@ -153,25 +153,25 @@ class AccuWeatherProvider:
     default_url = config.DEFAULT_ACCU_LOCATION_URL
 
 
-    def configurate(self, refresh=False):
+    def configurate(self):
         """Creating a configuration
         """
         provider = self.name
         locations = self.get_accu_locations(
-            config.ACCU_BROWSE_LOCATIONS, refresh=refresh)
+            config.ACCU_BROWSE_LOCATIONS)
         while locations:
             for index, location in enumerate(locations):
                 print(f'{index + 1}, {location[0]}')
             selected_index = int(input('Please select location: '))
             location = locations[selected_index - 1]
-            locations = self.get_accu_locations(location[1], refresh=refresh)
+            locations = self.get_accu_locations(location[1])
 
         self.save_configuration(provider, *location)
 
-    def get_accu_locations(self, locations_url, refresh=False):
+    def get_accu_locations(self, locations_url):
         """Getting a list of cities for ACCU provider 
         """
-        locations_page = self.get_page_source(locations_url, refresh=refresh)
+        locations_page = self.get_page_source(locations_url)
         soup = BeautifulSoup(locations_page, 'lxml')
 
         locations = []
@@ -181,7 +181,7 @@ class AccuWeatherProvider:
             locations.append((location, url))
         return locations
 
-    def get_weather_info(self, page_content, refresh=False):
+    def get_weather_info(self, page_content):
         """ Receiving the current weather data
         """
         city_page = BeautifulSoup(page_content, "lxml")
@@ -192,7 +192,7 @@ class AccuWeatherProvider:
         current_day_url = current_day_section.find('a').attrs['href']
         if current_day_url:
             current_day_page = self.get_page_source(
-                current_day_url, refresh=refresh)
+                current_day_url)
             if current_day_page:
                 current_day = \
                     BeautifulSoup(current_day_page, "lxml")
@@ -215,7 +215,7 @@ class AccuWeatherProvider:
         return weather_info
 
 
-class Rp5WeatherProvider:
+class Rp5WeatherProvider(WeatherProvider):
     """ Weather provider for RP5 site.
     """
 
@@ -226,7 +226,7 @@ class Rp5WeatherProvider:
     default_location = config.DEFAULT_RP5_LOCATION_NAME
     default_url = config.DEFAULT_RP5_LOCATION_URL
 
-    def configurate(self, refresh=False):
+    def configurate(self):
         """Creating a configuration
         """
 
@@ -234,13 +234,13 @@ class Rp5WeatherProvider:
 
         browse_locations = config.RP5_BROWSE_LOCATIONS
         provider = 'rp5'
-        countries = self.get_rp5_countries(browse_locations, refresh=refresh)
+        countries = self.get_rp5_countries(browse_locations)
         for index, country in enumerate(countries):
             print(f'{index + 1}, {country[0]}')
         selected_index = int(input('Please select location: '))
         country = countries[selected_index - 1]
 
-        cities = self.get_rp5_cities(country[1], refresh=refresh)
+        cities = self.get_rp5_cities(country[1])
         for index, city in enumerate(cities):
             print(f'{index + 1}. {city[0]}')
         selected_index = int(input('Please select city: '))
@@ -249,10 +249,10 @@ class Rp5WeatherProvider:
         self.save_configuration(provider, *location)
 
 
-    def get_rp5_countries(self, locations_url, refresh=False):
+    def get_rp5_countries(self, locations_url):
         """Getting a list of countries for RP5 provider 
         """
-        locations_page = self.get_page_source(locations_url, refresh=refresh)
+        locations_page = self.get_page_source(locations_url)
         soup = BeautifulSoup(locations_page, 'lxml')
 
         countries = []
@@ -262,10 +262,10 @@ class Rp5WeatherProvider:
             countries.append((location, url))
         return countries
 
-    def get_rp5_cities(self, cities_url, refresh=False):
+    def get_rp5_cities(self, cities_url):
         """Getting a list of cities for RP5 provider 
         """
-        locations_page = self.get_page_source(cities_url, refresh=refresh)
+        locations_page = self.get_page_source(cities_url)
         soup = BeautifulSoup(locations_page, 'lxml')
 
         cities = []
@@ -278,7 +278,7 @@ class Rp5WeatherProvider:
 
         return cities
 
-    def get_weather_info(self, page_content, refresh=False):
+    def get_weather_info(self, page_content):
         """ Receiving the current weather data
         """
         city_page = BeautifulSoup(page_content, "lxml")
