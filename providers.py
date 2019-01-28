@@ -145,6 +145,14 @@ class AccuWeatherProvider:
     """ Weather provider for AccuWeather site.
     """
 
+
+    name = config.ACCU_PROVIDER_NAME
+    title = config.ACCU_PROVIDER_TITLE
+
+    default_location = config.DEFAULT_ACCU_LOCATION_NAME
+    default_url = config.DEFAULT_ACCU_LOCATION_URL
+
+
     def configurate(self, refresh=False):
         """Creating a configuration
         """
@@ -211,6 +219,12 @@ class Rp5WeatherProvider:
     """ Weather provider for RP5 site.
     """
 
+
+    name = config.RP5_PROVIDER_NAME
+    title = config.RP5_PROVIDER_TITLE
+
+    default_location = config.DEFAULT_RP5_LOCATION_NAME
+    default_url = config.DEFAULT_RP5_LOCATION_URL
 
     def configurate(self, refresh=False):
         """Creating a configuration
@@ -294,5 +308,3 @@ class Rp5WeatherProvider:
             weather_info_rp5['wind'] = \
                 'Вітер' + wind_velocity + ', ' + wind_direction
         return weather_info_rp5
-
-    def run(self, refresh=False):
