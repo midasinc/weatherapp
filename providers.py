@@ -215,7 +215,7 @@ class AccuWeatherProvider(WeatherProvider):
         return weather_info
 
 
-class Rp5Provider(WeatherProvider):
+class RP5Provider(WeatherProvider):
     """ Weather provider for RP5 site.
     """
 

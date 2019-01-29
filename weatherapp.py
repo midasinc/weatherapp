@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 
 import config
-from providers import AccuWeatherProvider, Rp5Provider
+from providers import AccuWeatherProvider, RP5Provider
 
 
 def configuration(refresh=False):
@@ -37,7 +37,7 @@ def configuration(refresh=False):
         accu_conf = AccuWeatherProvider()
         accu_conf.configurate(refresh=refresh)
     elif num_provider == 2:
-        rp5_conf = Rp5Provider()
+        rp5_conf = RP5Provider()
         rp5_conf.configurate(refresh=refresh)
 
     else:
@@ -69,7 +69,7 @@ def save_provider_weather_info(provider, refresh=False):
         accu = AccuWeatherProvider()
         save_to_file(provider, accu.location, accu.run(refresh=refresh))
     elif provider == 'rp5':
-        rp5 = Rp5Provider()
+        rp5 = RP5Provider()
         save_to_file(provider, rp5.location, rp5.run(refresh=refresh))
     else:
         print("Unknown weather provider!")
@@ -97,7 +97,7 @@ def get_provider_weather_info(provider, refresh=False):
         accu = AccuWeatherProvider()
         produce_output(provider, accu.location, accu.run(refresh=refresh))
     elif provider == 'rp5':
-        rp5 = Rp5Provider()
+        rp5 = RP5Provider()
         produce_output(provider, rp5.location, rp5.run(refresh=refresh))
     else:
         print("Unknown weather provider!")
