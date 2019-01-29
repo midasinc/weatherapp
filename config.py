@@ -10,8 +10,6 @@ CONFIG_FILE = '.weatherapp.ini'  # configuration file name
 CACHE_DIR = '.wappcache'  # cache directory name
 CACHE_TIME = 300          # how long cache files are valid (in seconds)
 
-DEFAULT_NAME = 'Дніпро'
-
 # AccuWeather provider related configuration
 ACCU_PROVIDER_NAME = 'accu'          # provider id
 ACCU_PROVIDER_TITLE = 'AccuWeather'  # provider title

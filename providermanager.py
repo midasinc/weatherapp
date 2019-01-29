@@ -2,7 +2,6 @@ from providers import AccuWeatherProvider, RP5Provider
 
 
 class ProviderManager:
-
     """ Discovers registered providers and loads them.
     """
 
