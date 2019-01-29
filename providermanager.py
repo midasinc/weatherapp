@@ -5,4 +5,3 @@ class ProviderManager:
 
     def __init__(self):
         self._providers = {}
-        self._load_providers()
