@@ -59,14 +59,14 @@ class App:
         if not command_name:
             # run all command providers by default
             for name, provider in self.provider_manager._providers.items():
-                provider_obj = provider(self)
-                self.produce_output(provider_obj.title, provider_obj.location,
-                                    provider_obj.run())
+                self.produce_output(provider(self).title, 
+                                    provider(self).location,
+                                    provider(self).run())
         elif command_name in self.provider_manager:
             provider = self.provider_manager[command_name]
-            provider_obj = provider(self)
-            self.produce_output(provider_obj.title, provider_obj.location,
-                                provider_obj.run())
+            self.produce_output(provider(self).title, 
+                                provider(self).location,
+                                provider(self).run())
 
 
 def main(argv=sys.argv[1:]):
