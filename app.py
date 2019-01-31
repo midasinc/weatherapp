@@ -23,8 +23,8 @@ class App:
         arg_parser.add_argument('command', help="Command", nargs='?')
         arg_parser.add_argument('--refresh', help="Bypass caches", 
                                 action='store_true')
-        # arg_parser.add_argument(
-        #     'command2', help="Save weather to file", nargs='?')
+        arg_parser.add_argument(
+            'command2', help="Save weather to file", nargs='?')
 
         return arg_parser
 
@@ -67,6 +67,14 @@ class App:
             self.produce_output(provider(self).title, 
                                 provider(self).location,
                                 provider(self).run())
+        
+        command_name_save = self.options.command2
+        if command_name_save:
+            """ #TODO:  Implement the recording of 
+            weather conditions in a file 
+            """
+            print("save file!") 
+
 
 
 def main(argv=sys.argv[1:]):
