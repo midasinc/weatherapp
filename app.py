@@ -1,13 +1,8 @@
 #!/usr/bin/env python
-
 """ Main application module
 """
 import sys
 from argparse import ArgumentParser
-
-
-def newmethod675():
-    return providermanager
 
 from providermanager import ProviderManager
 
@@ -26,7 +21,7 @@ class App:
 
         arg_parser = ArgumentParser(add_help=False)
         arg_parser.add_argument('command', help="Command", nargs='?')
-        arg_parser.add_argument('--refresh', help="Bypass caches",
+        arg_parser.add_argument('--refresh', help="Bypass caches", 
                                 action='store_true')
         # arg_parser.add_argument(
         #     'command2', help="Save weather to file", nargs='?')
@@ -65,14 +60,12 @@ class App:
             # run all command providers by default
             for name, provider in self.provider_manager._providers.items():
                 provider_obj = provider(self)
-                self.produce_output(provider_obj.title,
-                                    provider_obj.location,
+                self.produce_output(provider_obj.title, provider_obj.location,
                                     provider_obj.run())
         elif command_name in self.provider_manager:
             provider = self.provider_manager[command_name]
             provider_obj = provider(self)
-            self.produce_output(provider_obj.title, 
-                                provider_obj.location,
+            self.produce_output(provider_obj.title, provider_obj.location,
                                 provider_obj.run())
 
 
