@@ -1,7 +1,13 @@
+#!/usr/bin/env python
+
 """ Main application module
 """
 import sys
 from argparse import ArgumentParser
+
+
+def newmethod675():
+    return providermanager
 
 from providermanager import ProviderManager
 

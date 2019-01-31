@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """ Weather providers
 """
 import configparser
