@@ -10,9 +10,9 @@ class App:
     """ Weather aggregator application
     """
 
-    def ___init___(self):
+    def __init__(self):
         self.arg_parser = self._arg_parse()
-        self.providermanager = ProviderManager()
+        self.provider_manager = ProviderManager()
 
     def _arg_parse(self):
         """ Initialize argument parser
@@ -20,10 +20,10 @@ class App:
 
         arg_parser = ArgumentParser(add_help=False)
         arg_parser.add_argument('command', help="Command", nargs='?')
-        arg_parser.add_argument(
-            '--refresh', help="Bypass caches", action='store_true')
-        arg_parser.add_argument(
-            'command2', help="Save weather to file", nargs='?')
+        arg_parser.add_argument('--refresh', help="Bypass caches",
+                                action='store_true')
+        # arg_parser.add_argument(
+        #     'command2', help="Save weather to file", nargs='?')
 
         return arg_parser
 
@@ -57,14 +57,17 @@ class App:
 
         if not command_name:
             # run all command providers by default
-            for name, provider in self.providermanager._providers.items():
-                self.produce_output(provider.title,
-                                    provider(self).location,
-                                    provider(self).run())
-        elif command_name in self.providermanager:
-            provider = self.providermanager[command_name](self)
-            self.produce_output(provider.title, provider.location,
-                                provider.run())
+            for name, provider in self.provider_manager._providers.items():
+                provider_obj = provider(self)
+                self.produce_output(provider_obj.title,
+                                    provider_obj.location,
+                                    provider_obj.run())
+        elif command_name in self.provider_manager:
+            provider = self.provider_manager[command_name]
+            provider_obj = provider(self)
+            self.produce_output(provider_obj.title, 
+                                provider_obj.location,
+                                provider_obj.run())
 
 
 def main(argv=sys.argv[1:]):

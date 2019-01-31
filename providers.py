@@ -6,10 +6,10 @@ import hashlib
 import re
 import time
 from pathlib import Path
+from urllib.parse import quote
 
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import quote
 
 import config
 
@@ -20,8 +20,6 @@ class WeatherProvider():
 
     def __init__(self, app):
         self.app = app
-
-        # self.name = config.ACCU_PROVIDER_NAME  #FIXME:
 
         location, url = self._get_configuration()
         self.location = location
@@ -39,10 +37,9 @@ class WeatherProvider():
         :return: Return the name of the selected place (city) and url
         :rtype: tuple
         """
-
         provider = self.name
-        place_name = config.DEFAULT_NAME
-        url = config.ACCU_DEFAULT_URL
+        place_name = self.default_location
+        url = self.default_url
 
         parser = configparser.ConfigParser(strict=False, interpolation=None)
 
@@ -145,20 +142,17 @@ class AccuWeatherProvider(WeatherProvider):
     """ Weather provider for AccuWeather site.
     """
 
-
     name = config.ACCU_PROVIDER_NAME
     title = config.ACCU_PROVIDER_TITLE
 
     default_location = config.DEFAULT_ACCU_LOCATION_NAME
     default_url = config.DEFAULT_ACCU_LOCATION_URL
 
-
     def configurate(self):
         """Creating a configuration
         """
         provider = self.name
-        locations = self.get_accu_locations(
-            config.ACCU_BROWSE_LOCATIONS)
+        locations = self.get_accu_locations(config.ACCU_BROWSE_LOCATIONS)
         while locations:
             for index, location in enumerate(locations):
                 print(f'{index + 1}, {location[0]}')
@@ -191,8 +185,7 @@ class AccuWeatherProvider(WeatherProvider):
         weather_info = {}
         current_day_url = current_day_section.find('a').attrs['href']
         if current_day_url:
-            current_day_page = self.get_page_source(
-                current_day_url)
+            current_day_page = self.get_page_source(current_day_url)
             if current_day_page:
                 current_day = \
                     BeautifulSoup(current_day_page, "lxml")
@@ -218,7 +211,6 @@ class AccuWeatherProvider(WeatherProvider):
 class RP5Provider(WeatherProvider):
     """ Weather provider for RP5 site.
     """
-
 
     name = config.RP5_PROVIDER_NAME
     title = config.RP5_PROVIDER_TITLE
@@ -247,7 +239,6 @@ class RP5Provider(WeatherProvider):
         location = cities[selected_index - 1]
 
         self.save_configuration(provider, *location)
-
 
     def get_rp5_countries(self, locations_url):
         """Getting a list of countries for RP5 provider 
@@ -296,13 +287,13 @@ class RP5Provider(WeatherProvider):
         feal_temp = current_day_section.find('div', class_='TempStr')
         if feal_temp:
             weather_info_rp5['feal_temp'] = feal_temp.text
-        #TODO: Improve the selection of information in the section "Wind"
+        # TODO: Improve the selection of information in the section "Wind"
         wind_info_section = str(
             current_day_section.find('div',
                                      class_='ArchiveInfo').text).split(', ')
-        wind_velocity = \
-            str(current_day_section.find('span', class_='wv_1'
-                                        ).text).replace('(','').replace(')','')
+        wind_velocity = str(
+            current_day_section.find('span', class_='wv_1').text).replace(
+                '(', '').replace(')', '')
         wind_direction = wind_info_section[5]
         if wind_velocity and wind_direction:
             weather_info_rp5['wind'] = \

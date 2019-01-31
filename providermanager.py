@@ -34,4 +34,4 @@ class ProviderManager:
         return name in self._providers
 
     def __getitem__(self, name):
-        return self._providers[name]        
+        return self._providers[name]
