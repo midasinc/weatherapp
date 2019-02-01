@@ -28,6 +28,8 @@ class ProviderManager:
         return self._providers.get(name, None)
 
     def __len__(self, name):
+        """ The number of items in the container
+        """
         return len(self._providers)
 
     def __contains__(self, name):

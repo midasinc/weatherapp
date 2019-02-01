@@ -52,6 +52,12 @@ class WeatherProvider():
 
     def save_configuration(self, provider, name, url):
         """ Save configuration to file
+        
+        :parma name: city name
+        :param type: str
+
+        :param url: Preferred location URL
+        :param type: str
         """
 
         parser = configparser.ConfigParser(strict=False, interpolation=None)

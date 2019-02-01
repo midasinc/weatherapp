@@ -1,5 +1,3 @@
-PROVIDER_NAME = {'accu': 'AccuWeather', 'rp5': 'RP5'}
-
 # Fake user agent for weather sites requests
 FAKE_MOZILLA_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64)'
 
