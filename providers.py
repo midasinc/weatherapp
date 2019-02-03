@@ -24,7 +24,8 @@ class WeatherProvider():
         self.location = location
         self.url = url
 
-    def get_configuration_file(self):
+    @staticmethod
+    def get_configuration_file():
         """ Getting the path to the configuration file
         """
 
@@ -73,24 +74,28 @@ class WeatherProvider():
         with open(self.get_configuration_file(), 'w') as configfile:
             parser.write(configfile)
 
-    def get_request_headers(self):
+    @staticmethod
+    def get_request_headers():
         """ Return custom headers for url requests.
         """
 
         return {'User-Agent': config.FAKE_MOZILLA_AGENT}
 
-    def get_url_hash(self, url):
+    @staticmethod
+    def get_url_hash(url):
         """ Generate url hash.
         """
 
         return hashlib.md5(url.encode('utf-8')).hexdigest()
 
-    def get_cache_directory(self):
+    @staticmethod
+    def get_cache_directory():
         """ Path to cache directory
         """
         return Path.cwd() / config.CACHE_DIR
 
-    def is_valid(self, path):
+    @staticmethod
+    def is_valid(path):
         """ Check if current cache file is valid
         """
 
@@ -278,8 +283,8 @@ class RP5Provider(WeatherProvider):
         """ Receiving the current weather data
         """
         city_page = BeautifulSoup(page_content, "lxml")
-        current_day_section = \
-            city_page.find('div', attrs={'id': 'archiveString'})
+        current_day_section = city_page.find('div',
+                                            attrs={'id': 'archiveString'})
         weather_info_rp5 = {}
         condition = str(
             current_day_section.find('span', class_='wv_0').previous)
