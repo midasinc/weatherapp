@@ -6,6 +6,8 @@ from argparse import ArgumentParser
 
 from providermanager import ProviderManager
 
+from decorators import delay_execute, execute_time, get_args
+
 
 class App:
     """ Weather aggregator application
@@ -21,10 +23,13 @@ class App:
 
         arg_parser = ArgumentParser(add_help=False)
         arg_parser.add_argument('command', help="Command", nargs='?')
-        arg_parser.add_argument('--refresh', help="Bypass caches", 
-                                action='store_true')
+        arg_parser.add_argument(
+            '--refresh', help="Bypass caches", action='store_true')
         return arg_parser
-
+    
+    @execute_time
+    @delay_execute(sec=3)
+    @get_args
     def produce_output(self, title, location, info):
         """Print results
         
@@ -56,14 +61,16 @@ class App:
         if not command_name:
             # run all command providers by default
             for name, provider in self.provider_manager._providers.items():
-                self.produce_output(provider(self).title, 
-                                    provider(self).location,
-                                    provider(self).run())
+                self.produce_output(
+                    provider(self).title,
+                    provider(self).location,
+                    provider(self).run())
         elif command_name in self.provider_manager:
             provider = self.provider_manager[command_name]
-            self.produce_output(provider(self).title, 
-                                provider(self).location,
-                                provider(self).run())
+            self.produce_output(
+                provider(self).title,
+                provider(self).location,
+                provider(self).run())
 
 
 def main(argv=sys.argv[1:]):
