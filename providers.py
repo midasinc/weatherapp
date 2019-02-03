@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 import config
 
 
-class WeatherProvider():
+class WeatherProvider:
     """ Base weather provider
     """
 
@@ -53,8 +53,11 @@ class WeatherProvider():
 
     def save_configuration(self, provider, name, url):
         """ Save configuration to file
-        
-        :parma name: city name
+
+        :param provider: provider id
+        :param type: str
+
+        :param name: city name
         :param type: str
 
         :param url: Preferred location URL
@@ -235,7 +238,6 @@ class RP5Provider(WeatherProvider):
         provider = self.name
 
         browse_locations = config.RP5_BROWSE_LOCATIONS
-        provider = 'rp5'
         countries = self.get_rp5_countries(browse_locations)
         for index, country in enumerate(countries):
             print(f'{index + 1}, {country[0]}')
