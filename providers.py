@@ -1,27 +1,29 @@
 """ Weather providers
 """
-import configparser
-import hashlib
+
 import re
-import time
-from pathlib import Path
 from urllib.parse import quote
 
-import requests
 from bs4 import BeautifulSoup
 
 import config
+from abstract import WeatherProvider
 
 
 class AccuWeatherProvider(WeatherProvider):
     """ Weather provider for AccuWeather site.
     """
-
     name = config.ACCU_PROVIDER_NAME
     title = config.ACCU_PROVIDER_TITLE
 
-    default_location = config.DEFAULT_ACCU_LOCATION_NAME
-    default_url = config.DEFAULT_ACCU_LOCATION_URL
+    def get_name(self):
+        return config.ACCU_PROVIDER_NAME
+
+    def get_default_location(self):
+        return config.DEFAULT_ACCU_LOCATION_NAME
+
+    def get_default_url(self):
+        return config.DEFAULT_ACCU_LOCATION_URL
 
     def configurate(self):
         """Creating a configuration
@@ -90,8 +92,14 @@ class RP5Provider(WeatherProvider):
     name = config.RP5_PROVIDER_NAME
     title = config.RP5_PROVIDER_TITLE
 
-    default_location = config.DEFAULT_RP5_LOCATION_NAME
-    default_url = config.DEFAULT_RP5_LOCATION_URL
+    def get_name(self):
+        return self.name
+
+    def get_default_location(self):
+        return config.DEFAULT_RP5_LOCATION_NAME
+
+    def get_default_url(self):
+        return config.DEFAULT_RP5_LOCATION_URL
 
     def configurate(self):
         """Creating a configuration

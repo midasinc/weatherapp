@@ -29,7 +29,6 @@ def execute_time(func):
         result = func(*args, **kwargs)
         run_time = time.perf_counter() - start_time
         print(f"Finished function in {run_time:.4f} secs")
-        # print(f"Finished {func.__name__} in {run_time:.4f} secs")
 
         return result
 

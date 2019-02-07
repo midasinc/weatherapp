@@ -51,6 +51,11 @@ class WeatherProvider(Command):
         self.url = url
 
     @abc.abstractmethod
+    def get_name(self):
+        """ Provider name
+        """
+
+    @abc.abstractmethod
     def get_default_location(self):
         """ Default location name
         """
@@ -93,19 +98,19 @@ class WeatherProvider(Command):
         :return: Return the name of the selected place (city) and url
         :rtype: tuple
         """
-        provider = self.name
-        place_name = self.default_location
-        url = self.default_url
-
+        provider = self.get_name()
+        name = self.get_default_location()
+        url = self.get_default_url()
+        
         parser = configparser.ConfigParser(strict=False, interpolation=None)
 
         parser.read(self.get_configuration_file())
 
         if provider in parser.sections():
             location_config = parser[provider]
-            place_name, url = location_config['name'], location_config['url']
+            name, url = location_config['name'], location_config['url']
 
-        return place_name, url
+        return name, url
 
     def save_configuration(self, provider, name, url):
         """ Save configuration to file

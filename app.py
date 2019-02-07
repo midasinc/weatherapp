@@ -64,13 +64,13 @@ class App:
                 self.produce_output(
                     provider(self).title,
                     provider(self).location,
-                    provider(self).run())
+                    provider(self).run(remaining_args))
         elif command_name in self.provider_manager:
             provider = self.provider_manager[command_name]
             self.produce_output(
                 provider(self).title,
                 provider(self).location,
-                provider(self).run())
+                provider(self).run(remaining_args))
 
 
 def main(argv=sys.argv[1:]):
