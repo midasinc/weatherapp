@@ -17,7 +17,7 @@ class Command(abc.ABC):
     """ Base class for commands.
 
     :param app: Main application instance
-    :type app: `app.App`
+    :type app: 'app.App'
     """
 
     def __init__(self, app):
@@ -101,7 +101,7 @@ class WeatherProvider(Command):
         provider = self.get_name()
         name = self.get_default_location()
         url = self.get_default_url()
-        
+
         parser = configparser.ConfigParser(strict=False, interpolation=None)
 
         parser.read(self.get_configuration_file())

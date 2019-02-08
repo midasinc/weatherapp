@@ -6,8 +6,6 @@ from argparse import ArgumentParser
 
 from providermanager import ProviderManager
 
-from decorators import delay_execute, execute_time, get_args
-
 
 class App:
     """ Weather aggregator application
@@ -26,10 +24,7 @@ class App:
         arg_parser.add_argument(
             '--refresh', help="Bypass caches", action='store_true')
         return arg_parser
-    
-    @execute_time
-    @delay_execute(sec=3)
-    @get_args
+
     def produce_output(self, title, location, info):
         """Print results
         
