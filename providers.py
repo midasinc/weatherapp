@@ -176,7 +176,7 @@ class RP5Provider(WeatherProvider):
         wind_velocity = str(
             current_day_section.find('span', class_='wv_1').text).replace(
                 '(', '').replace(')', '')
-        wind_direction = wind_info_section[5]
+        wind_direction = wind_info_section[4]
         if wind_velocity and wind_direction:
             weather_info_rp5['wind'] = \
                 'Вітер' + wind_velocity + ', ' + wind_direction
