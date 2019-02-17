@@ -42,7 +42,7 @@ class App:
         print("#" * 10, end='\n\n')
 
         print(f'{location}')
-        print("#" * 20)
+        print("#" * 25)
         for key, value in info.items():
             print(f'{key}: {value}')
         print("=" * 40, end='\n\n')

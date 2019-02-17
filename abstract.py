@@ -104,7 +104,12 @@ class WeatherProvider(Command):
 
         parser = configparser.ConfigParser(strict=False, interpolation=None)
 
-        parser.read(self.get_configuration_file())
+        try:
+            parser.read(self.get_configuration_file())
+        except configparser.Error:
+            print("\nProviders configuration file is corrupt!"
+                  "\nReconfigure it. The program will be interrupted.\n")
+            raise SystemExit
 
         if provider in parser.sections():
             location_config = parser[provider]
