@@ -25,6 +25,9 @@ class App:
         arg_parser.add_argument('command', help="Command", nargs='?')
         arg_parser.add_argument(
             '--refresh', help="Bypass caches", action='store_true')
+        arg_parser.add_argument(
+            '--debug', help="Debug mode", action='store_true')
+
         return arg_parser
 
     def produce_output(self, title, location, info):
@@ -89,7 +92,15 @@ def main(argv=sys.argv[1:]):
     """Main entry point
     """
 
-    return App().run(argv)
+    if '--debug' in argv:
+        return App().run(argv)
+    else:
+        try:
+            return App().run(argv)
+        except Exception:
+            print('\nThe program can not continue to work'
+                  'due to a runtime error!\n')
+            raise SystemExit
 
 
 if __name__ == '__main__':

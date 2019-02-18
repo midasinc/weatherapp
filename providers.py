@@ -38,7 +38,7 @@ class AccuWeatherProvider(WeatherProvider):
                     selected_index = int(input('Please select location: '))
                     location = locations[selected_index - 1]
                     break
-                except (IndexError, ValueError) as wloc:
+                except (IndexError, ValueError):
                     print('\nYou entered a wrong location\n'
                           'Depending on the choice of location enter a number'
                           f' from 1 to {len(locations)}\n'
@@ -124,22 +124,21 @@ class RP5Provider(WeatherProvider):
         countries = self.get_rp5_countries(browse_locations)
         for index, country in enumerate(countries):
             print(f'{index + 1}, {country[0]}')
-        
+
         for i in range(3, 0, -1):  # User input validation
             try:
                 selected_index = int(input('Please select location: '))
                 country = countries[selected_index - 1]
                 break
-            except (IndexError, ValueError) as wloc:
+            except (IndexError, ValueError):
                 print('\nYou entered a wrong location\n'
-                        'Depending on the choice of location enter a number'
-                        f' from 1 to {len(countries)}\n'
-                        f'You have {i - 1} attempts left.')
+                      'Depending on the choice of location enter a number'
+                      f' from 1 to {len(countries)}\n'
+                      f'You have {i - 1} attempts left.')
                 if not (i - 1):
                     print('Attempts have been exhausted,'
-                            'the program will be closed')
+                          'the program will be closed')
                     raise SystemExit
-       
 
         cities = self.get_rp5_cities(country[1])
         for index, city in enumerate(cities):
@@ -149,16 +148,15 @@ class RP5Provider(WeatherProvider):
                 selected_index = int(input('Please select city: '))
                 location = cities[selected_index - 1]
                 break
-            except (IndexError, ValueError) as wloc:
+            except (IndexError, ValueError):
                 print('\nYou entered a wrong location\n'
-                        'Depending on the choice of location enter a number'
-                        f' from 1 to {len(cities)}\n'
-                        f'You have {i - 1} attempts left.')
+                      'Depending on the choice of location enter a number'
+                      f' from 1 to {len(cities)}\n'
+                      f'You have {i - 1} attempts left.')
                 if not (i - 1):
                     print('Attempts have been exhausted,'
-                            'the program will be closed')
+                          'the program will be closed')
                     raise SystemExit
-
 
         self.save_configuration(provider, *location)
 
