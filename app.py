@@ -1,16 +1,25 @@
 #!/usr/bin/env python
 """ Main application module
 """
+import logging
 import sys
-from argparse import ArgumentParser
 
+from argparse import ArgumentParser
 from commands import Configurate, Providers
+
+import config
 from providermanager import ProviderManager
 
 
 class App:
     """ Weather aggregator application
     """
+
+    logger = logging.getLogger(__name__)
+    LOG_LEVEL_MAP = {0: logging.WARNING,
+                     1: logging.INFO,
+                     2: logging.DEBUG}
+
 
     def __init__(self):
         self.arg_parser = self._arg_parse()
@@ -28,7 +37,30 @@ class App:
         arg_parser.add_argument(
             '--debug', help="Debug mode", action='store_true')
 
+        arg_parser.add_argument(
+            '-v',
+            '--verbose',
+            action='count',
+            dest='verbose_level',
+            default=config.DEFAULT_VERBOSE_LEVEL,
+            help='Increase verbosity of output.')
+
         return arg_parser
+
+    def configure_logging(self):
+        """ Create logging handlers for any log output.
+        """
+
+        root_logger = logging.getLogger('')
+        root_logger.setLevel(logging.DEBUG)
+
+        console = logging.StreamHandler()
+        console_level = self.LOG_LEVEL_MAP.get(self.options.verbose_level,
+                                               logging.WARNING)
+        console.setLevel(console_level)
+        formatter = logging.Formatter(config.DEFAULT_MESSAGE_FORMAT)
+        console.setFormatter(formatter)
+        root_logger.addHandler(console)
 
     def produce_output(self, title, location, info):
         """Print results
@@ -41,7 +73,7 @@ class App:
         :type info: dict
         """
 
-        print(f'{title}:')
+        print(f'\n{title}:')
         print("#" * 10, end='\n\n')
 
         print(f'{location}')
@@ -57,6 +89,9 @@ class App:
         """
 
         self.options, remaining_args = self.arg_parser.parse_known_args(argv)
+        self.configure_logging()
+        self.logger.debug("Got the following args %s", argv)
+        
         command_name = self.options.command
 
         if command_name in self.add_commands:
