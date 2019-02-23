@@ -20,7 +20,6 @@ class App:
                      1: logging.INFO,
                      2: logging.DEBUG}
 
-
     def __init__(self):
         self.arg_parser = self._arg_parse()
         self.provider_manager = ProviderManager()
@@ -58,7 +57,8 @@ class App:
         console_level = self.LOG_LEVEL_MAP.get(self.options.verbose_level,
                                                logging.WARNING)
         console.setLevel(console_level)
-        formatter = logging.Formatter(config.DEFAULT_MESSAGE_FORMAT)
+        formatter = logging.Formatter(
+            '%(asctime)s - %(levelname)s - %(funcName)s - %(message)s')
         console.setFormatter(formatter)
         root_logger.addHandler(console)
 
@@ -67,7 +67,7 @@ class App:
         
         :param title: weather provider name
         :type title: str
-        :param location: city name
+        :param location: city nameа
         :type location: str
         :param info: weather conditions for the city 
         :type info: dict
@@ -91,7 +91,7 @@ class App:
         self.options, remaining_args = self.arg_parser.parse_known_args(argv)
         self.configure_logging()
         self.logger.debug("Got the following args %s", argv)
-        
+
         command_name = self.options.command
 
         if command_name in self.add_commands:
