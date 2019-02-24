@@ -3,11 +3,10 @@
 """
 import logging
 import sys
-
 from argparse import ArgumentParser
-from commands import Configurate, Providers
 
 import config
+from commands import Configurate, Providers
 from providermanager import ProviderManager
 
 
@@ -34,7 +33,10 @@ class App:
         arg_parser.add_argument(
             '--refresh', help="Bypass caches", action='store_true')
         arg_parser.add_argument(
-            '--debug', help="Debug mode", action='store_true')
+            '--debug',
+            action='store_true',
+            default=False,
+            help='Show tracebacks on errors.')
 
         arg_parser.add_argument(
             '-v',
@@ -57,8 +59,7 @@ class App:
         console_level = self.LOG_LEVEL_MAP.get(self.options.verbose_level,
                                                logging.WARNING)
         console.setLevel(console_level)
-        formatter = logging.Formatter(
-            '%(asctime)s - %(levelname)s - %(funcName)s - %(message)s')
+        formatter = logging.Formatter(config.DEFAULT_MESSAGE_FORMAT)
         console.setFormatter(formatter)
         root_logger.addHandler(console)
 
@@ -100,9 +101,17 @@ class App:
 
             for command in [Configurate, Providers]:
                 self.commands[command.name] = command
-
             command_factory = self.commands[command_name]
-            return command_factory(self).run(remaining_args)
+            
+            try:
+                return command_factory(self).run(remaining_args)
+
+            except Exception:    
+                msg = "Error during command: %s run"
+                if self.options.debug:
+                    self.logger.exception(msg, command_name)
+                else:
+                    self.logger.error(msg, command_name)
 
         if not command_name:
             # run all command providers by default
@@ -118,9 +127,6 @@ class App:
                 provider(self).title,
                 provider(self).location,
                 provider(self).run(remaining_args))
-
-        else:
-            print('!!! Another command !!!')
 
 
 def main(argv=sys.argv[1:]):
