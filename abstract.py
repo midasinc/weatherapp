@@ -5,6 +5,7 @@ import abc
 import argparse
 import configparser
 import hashlib
+import logging
 import time
 from pathlib import Path
 
@@ -46,6 +47,7 @@ class WeatherProvider(Command):
     def __init__(self, app):
         super().__init__(app)
 
+        self.logger = logging.getLogger(__name__)
         location, url = self._get_configuration()
         self.location = location
         self.url = url
@@ -107,8 +109,9 @@ class WeatherProvider(Command):
         try:
             parser.read(self.get_configuration_file())
         except configparser.Error:
-            print("\nProviders configuration file is corrupt!"
-                  "\nReconfigure it. The program will be interrupted.\n")
+            msg = ("\nProviders configuration file is corrupt!\n"
+                   "Reconfigure it. The program will be interrupted.")
+            self.logger.exception(msg)
             raise SystemExit
 
         if provider in parser.sections():

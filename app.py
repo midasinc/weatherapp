@@ -139,7 +139,7 @@ def main(argv=sys.argv[1:]):
         try:
             return App().run(argv)
         except Exception:
-            print('\nThe program can not continue to work'
+            print('\nThe program can not continue to work '
                   'due to a runtime error!\n')
             raise SystemExit
 
