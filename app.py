@@ -37,7 +37,7 @@ class App:
             action='store_true',
             default=False,
             help='Show tracebacks on errors.')
-
+        
         arg_parser.add_argument(
             '-v',
             '--verbose',
@@ -68,7 +68,7 @@ class App:
         
         :param title: weather provider name
         :type title: str
-        :param location: city nameа
+        :param location: city name
         :type location: str
         :param info: weather conditions for the city 
         :type info: dict
@@ -91,7 +91,7 @@ class App:
 
         self.options, remaining_args = self.arg_parser.parse_known_args(argv)
         self.configure_logging()
-        self.logger.debug("Got the following args %s", argv)
+        self.logger.debug("  %s", argv)
 
         command_name = self.options.command
 
@@ -106,7 +106,7 @@ class App:
             try:
                 return command_factory(self).run(remaining_args)
 
-            except Exception:    
+            except Exception:
                 msg = "Error during command: %s run"
                 if self.options.debug:
                     self.logger.exception(msg, command_name)

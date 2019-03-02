@@ -1,6 +1,7 @@
 """ Weather providers
 """
 
+import logging
 import re
 from urllib.parse import quote
 
@@ -9,6 +10,7 @@ from bs4 import BeautifulSoup
 import config
 from abstract import WeatherProvider
 
+logger = logging.getLogger(__name__)
 
 class AccuWeatherProvider(WeatherProvider):
     """ Weather provider for AccuWeather site.
@@ -38,7 +40,8 @@ class AccuWeatherProvider(WeatherProvider):
                     selected_index = int(input('Please select location: '))
                     location = locations[selected_index - 1]
                     break
-                except (IndexError, ValueError):
+                except (IndexError, ValueError) as ex:
+                    self.logger.debug(ex)
                     print('\nYou entered a wrong location\n'
                           'Depending on the choice of location enter a number'
                           f' from 1 to {len(locations)}\n'
@@ -130,7 +133,8 @@ class RP5Provider(WeatherProvider):
                 selected_index = int(input('Please select location: '))
                 country = countries[selected_index - 1]
                 break
-            except (IndexError, ValueError):
+            except (IndexError, ValueError) as ex:
+                self.logger.debug(ex)
                 print('\nYou entered a wrong location\n'
                       'Depending on the choice of location enter a number'
                       f' from 1 to {len(countries)}\n'
@@ -148,7 +152,8 @@ class RP5Provider(WeatherProvider):
                 selected_index = int(input('Please select city: '))
                 location = cities[selected_index - 1]
                 break
-            except (IndexError, ValueError):
+            except (IndexError, ValueError) as ex:
+                self.logger.debug(ex)
                 print('\nYou entered a wrong location\n'
                       'Depending on the choice of location enter a number'
                       f' from 1 to {len(cities)}\n'

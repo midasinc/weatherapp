@@ -111,7 +111,7 @@ class WeatherProvider(Command):
         except configparser.Error:
             msg = ("\nProviders configuration file is corrupt!\n"
                    "Reconfigure it. The program will be interrupted.")
-            self.logger.exception(msg)
+            self.logger.debug(msg)
             raise SystemExit
 
         if provider in parser.sections():
