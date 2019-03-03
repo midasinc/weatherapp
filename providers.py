@@ -152,7 +152,7 @@ class RP5Provider(WeatherProvider):
                 selected_index = int(input('Please select city: '))
                 location = cities[selected_index - 1]
                 break
-            except (IndexError, ValueError) as ex:
+            except (IndexError, ValueError):
                 self.logger.debug(ex)
                 print('\nYou entered a wrong location\n'
                       'Depending on the choice of location enter a number'
