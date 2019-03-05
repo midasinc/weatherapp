@@ -6,7 +6,7 @@ import sys
 from argparse import ArgumentParser
 
 import config
-from commands import Configurate, Providers
+from commandmanager import CommandManager
 from providermanager import ProviderManager
 
 
@@ -15,14 +15,14 @@ class App:
     """
 
     logger = logging.getLogger(__name__)
-    LOG_LEVEL_MAP = {0: logging.WARNING,
-                     1: logging.INFO,
+    LOG_LEVEL_MAP = {0: logging.WARNING, 
+                     1: logging.INFO, 
                      2: logging.DEBUG}
 
     def __init__(self):
         self.arg_parser = self._arg_parse()
         self.provider_manager = ProviderManager()
-        self.add_commands = [Configurate.name, Providers.name]
+        self.commandmanager = CommandManager()
 
     def _arg_parse(self):
         """ Initialize argument parser
@@ -37,7 +37,7 @@ class App:
             action='store_true',
             default=False,
             help='Show tracebacks on errors.')
-        
+
         arg_parser.add_argument(
             '-v',
             '--verbose',
@@ -95,16 +95,11 @@ class App:
 
         command_name = self.options.command
 
-        if command_name in self.add_commands:
+        if command_name in self.commandmanager:
+            command_factory = self.commandmanager.get(command_name)
 
-            self.commands = {}
-
-            for command in [Configurate, Providers]:
-                self.commands[command.name] = command
-            command_factory = self.commands[command_name]
-            
             try:
-                return command_factory(self).run(remaining_args)
+                command_factory(self).run(remaining_args)
 
             except Exception:
                 msg = "Error during command: %s run"
