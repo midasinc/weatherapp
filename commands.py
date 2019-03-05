@@ -35,5 +35,5 @@ class Providers(Command):
         """ Run command.
         """
 
-        for name in self.app.provider_manager._providers:
+        for name in self.app.provider_manager._commands:
             print(name)

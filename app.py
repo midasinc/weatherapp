@@ -110,7 +110,7 @@ class App:
 
         if not command_name:
             # run all command providers by default
-            for name, provider in self.provider_manager._providers.items():
+            for name, provider in self.provider_manager._commands.items():
                 self.produce_output(
                     provider(self).title,
                     provider(self).location,
