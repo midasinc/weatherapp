@@ -13,5 +13,6 @@ setup(
     install_requires=[
         'requests',
         'bs4',
+        'lxml',
     ]
 )
