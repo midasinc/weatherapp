@@ -7,8 +7,8 @@ from urllib.parse import quote
 
 from bs4 import BeautifulSoup
 
-import config
-from abstract import WeatherProvider
+from weatherapp.core import config
+from weatherapp.core.abstract import WeatherProvider
 
 logger = logging.getLogger(__name__)
 

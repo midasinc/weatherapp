@@ -1,5 +1,5 @@
-import commandmanager
-from providers import AccuWeatherProvider, RP5Provider
+from weatherapp.core import commandmanager
+from weatherapp.core.providers import AccuWeatherProvider, RP5Provider
 
 
 class ProviderManager(commandmanager.CommandManager):
