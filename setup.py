@@ -16,6 +16,7 @@ setup(
         'requests',
         'bs4',
         'lxml',
+        'prettytable',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

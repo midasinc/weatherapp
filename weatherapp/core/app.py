@@ -5,6 +5,7 @@ import logging
 import sys
 from argparse import ArgumentParser
 
+from weatherapp.core.formatters import TableFormatter
 from weatherapp.core import config
 from weatherapp.core.commandmanager import CommandManager
 from weatherapp.core.providermanager import ProviderManager
@@ -26,6 +27,7 @@ class App:
         self.arg_parser = self._arg_parse()
         self.provider_manager = ProviderManager()
         self.commandmanager = CommandManager()
+        self.formatters = self._load_formatters()
 
     def _arg_parse(self):
         """ Initialize argument parser
@@ -49,7 +51,6 @@ class App:
                                 action='count',
                                 dest='verbose_level',
                                 default=config.DEFAULT_VERBOSE_LEVEL)
-
         return arg_parser
 
     def configure_logging(self):
@@ -67,25 +68,19 @@ class App:
         console.setFormatter(formatter)
         root_logger.addHandler(console)
 
+    @staticmethod
+    def _load_formatters():
+        return {'table': TableFormatter}
+
     def produce_output(self, title, location, info):
-        """Print results
-        
-        :param title: weather provider name
-        :type title: str
-        :param location: city name
-        :type location: str
-        :param info: weather conditions for the city 
-        :type info: dict
+        """Output results
         """
 
-        print(f'\n{title}:')
-        print("#" * 10, end='\n\n')
+        formatter = self.formatters.get(self.options.formatter, 'table')()
+        columns = [title, location]
 
-        print(f'{location}')
-        print("#" * 25)
-        for key, value in info.items():
-            print(f'{key}: {value}')
-        print("=" * 40, end='\n\n')
+        self.stdout.write(formatter.emit(columns, data))
+        self.stdout.write('\n')
 
     def run(self, argv):
         """ Run application.
@@ -122,11 +117,9 @@ class App:
 
         elif command_name in self.provider_manager:
             provider = self.provider_manager[command_name]
-            self.produce_output(
-                provider(self).title,
-                provider(self).location,
-                provider(self).run(remaining_args))
-
+            self.produce_output(provider(self).title,
+                                provider(self).location,
+                                provider(self).run(remaining_args))
 
 def main(argv=sys.argv[1:]):
     """Main entry point
