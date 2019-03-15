@@ -24,6 +24,4 @@ class TableFormatter(Formatter):
 
         pt.align = 'l'
         pt.padding_width = 1
-        # pt.hrules = 2
-        # pt.vrules = 0
         return pt.get_string()

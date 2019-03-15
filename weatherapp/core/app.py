@@ -32,22 +32,23 @@ class App:
         """
 
         arg_parser = ArgumentParser(add_help=False)
-        arg_parser.add_argument('command', help="Command", nargs='?')
-        arg_parser.add_argument(
-            '--refresh', help="Bypass caches", action='store_true')
-        arg_parser.add_argument(
-            '--debug',
-            action='store_true',
-            default=False,
-            help='Show tracebacks on errors.')
-
-        arg_parser.add_argument(
-            '-v',
-            '--verbose',
-            action='count',
-            dest='verbose_level',
-            default=config.DEFAULT_VERBOSE_LEVEL,
-            help='Increase verbosity of output.')
+        arg_parser.add_argument('command', help='Command', nargs='?')
+        arg_parser.add_argument('--refresh',
+                                help='Bypass caches',
+                                action='store_true')
+        arg_parser.add_argument('--debug',
+                                help='Show info for developer',
+                                action='store_true',
+                                default=False)
+        arg_parser.add_argument('-f', '--formatter',
+                                help='Output format, defaults to table',
+                                action='store',
+                                default='table')
+        arg_parser.add_argument('-v', '--verbose',
+                                help='Increase verbosity of output',
+                                action='count',
+                                dest='verbose_level',
+                                default=config.DEFAULT_VERBOSE_LEVEL)
 
         return arg_parser
 
