@@ -25,7 +25,7 @@ class App:
         self.stdout = stdout or sys.stdout
         self.stderr = stderr or sys.stderr
         self.arg_parser = self._arg_parse()
-        self.provider_manager = ProviderManager()
+        self.providermanager = ProviderManager()
         self.commandmanager = CommandManager()
         self.formatters = self._load_formatters()
 
@@ -35,10 +35,10 @@ class App:
 
         arg_parser = ArgumentParser(add_help=False)
         arg_parser.add_argument('command', help='Command', nargs='?')
-        arg_parser.add_argument('--refresh',
+        arg_parser.add_argument('-r', '--refresh',
                                 help='Bypass caches',
                                 action='store_true')
-        arg_parser.add_argument('--debug',
+        arg_parser.add_argument('-d', '--debug',
                                 help='Show info for developer',
                                 action='store_true',
                                 default=False)
@@ -72,8 +72,8 @@ class App:
     def _load_formatters():
         return {'table': TableFormatter}
 
-    def produce_output(self, title, location, info):
-        """Output results
+    def produce_output(self, title, location, data):
+        """ Print results.
         """
 
         formatter = self.formatters.get(self.options.formatter, 'table')()
@@ -81,6 +81,42 @@ class App:
 
         self.stdout.write(formatter.emit(columns, data))
         self.stdout.write('\n')
+
+    def run_command(self, name, argv):
+        """ Run command
+        """
+        command = self.commandmanager.get(name)
+        try:
+            command(self).run(argv)
+        except Exception:
+            msg = "Error during command: %s run"
+            if self.options.debug:
+                self.logger.exception(msg, name)
+            else:
+                self.logger.error(msg, name)
+
+    def run_provider(self, name, argv):
+        """ Run specified provider
+        """
+
+        provider = self.providermanager.get(name)
+        if provider:
+            provider = provider(self)
+            self.produce_output(provider.title,
+                                provider.location,
+                                provider.run(argv))
+
+    def run_providers(self, argv):
+        """ Execute all available providers.
+        """
+
+        for provider in self.providermanager._commands.values():
+            provider = provider(self)
+            self.produce_output(provider.title,
+                                provider.location,
+                                provider.run(argv))
+
+
 
     def run(self, argv):
         """ Run application.
@@ -90,36 +126,19 @@ class App:
 
         self.options, remaining_args = self.arg_parser.parse_known_args(argv)
         self.configure_logging()
-        self.logger.debug("  %s", argv)
 
         command_name = self.options.command
+        
+        if not command_name:
+            # run all providers
+            return self.run_providers(remaining_args)
 
         if command_name in self.commandmanager:
-            command_factory = self.commandmanager.get(command_name)
+            return self.run_command(command_name, remaining_args)
 
-            try:
-                command_factory(self).run(remaining_args)
+        if command_name in self.providermanager:
+            return self.run_provider(command_name, remaining_args)
 
-            except Exception:
-                msg = "Error during command: %s run"
-                if self.options.debug:
-                    self.logger.exception(msg, command_name)
-                else:
-                    self.logger.error(msg, command_name)
-
-        if not command_name:
-            # run all command providers by default
-            for name, provider in self.provider_manager._commands.items():
-                self.produce_output(
-                    provider(self).title,
-                    provider(self).location,
-                    provider(self).run(remaining_args))
-
-        elif command_name in self.provider_manager:
-            provider = self.provider_manager[command_name]
-            self.produce_output(provider(self).title,
-                                provider(self).location,
-                                provider(self).run(remaining_args))
 
 def main(argv=sys.argv[1:]):
     """Main entry point

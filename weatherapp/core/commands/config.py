@@ -18,5 +18,5 @@ class Configurate(Command):
 
         parsed_args = self.get_parser().parse_args(argv)
         provider_name = parsed_args.provider
-        provider_factory = self.app.provider_manager.get(provider_name)
+        provider_factory = self.app.providermanager.get(provider_name)
         provider_factory(self.app).configurate()
