@@ -1,5 +1,6 @@
 import logging
 import re
+import sys
 from urllib.parse import quote
 
 from bs4 import BeautifulSoup
@@ -35,8 +36,8 @@ class RP5Provider(WeatherProvider):
         browse_locations = config.RP5_BROWSE_LOCATIONS
         countries = self.get_rp5_countries(browse_locations)
         for index, country in enumerate(countries):
-            print(f'{index + 1}, {country[0]}')
-
+            self.stdout.write(f'{index + 1}. {country[0]} \n')
+        self.stdout.write('\n')
         for i in range(3, 0, -1):  # User input validation
             try:
                 selected_index = int(input('Please select location: '))
@@ -44,18 +45,19 @@ class RP5Provider(WeatherProvider):
                 break
             except (IndexError, ValueError) as ex:
                 self.logger.debug(ex)
-                print('\nYou entered a wrong location\n'
+                self.stdout.write('\nYou entered a wrong location\n'
                       'Depending on the choice of location enter a number'
                       f' from 1 to {len(countries)}\n'
-                      f'You have {i - 1} attempts left.')
+                      f'You have {i - 1} attempts left.\n')
                 if not (i - 1):
-                    print('Attempts have been exhausted,'
-                          'the program will be closed')
+                    self.stdout.write('Attempts have been exhausted,'
+                          'the program will be closed\n')
                     raise SystemExit
 
         cities = self.get_rp5_cities(country[1])
         for index, city in enumerate(cities):
-            print(f'{index + 1}. {city[0]}')
+            self.stdout.write(f'{index + 1}. {city[0]} \n')
+        self.stdout.write('\n')
         for i in range(3, 0, -1):  # User input validation
             try:
                 selected_index = int(input('Please select city: '))
@@ -63,13 +65,13 @@ class RP5Provider(WeatherProvider):
                 break
             except (IndexError, ValueError) as ex:
                 self.logger.debug(ex)
-                print('\nYou entered a wrong location\n'
+                self.stdout.write('\nYou entered a wrong location\n'
                       'Depending on the choice of location enter a number'
                       f' from 1 to {len(cities)}\n'
-                      f'You have {i - 1} attempts left.')
+                      f'You have {i - 1} attempts left.\n')
                 if not (i - 1):
-                    print('Attempts have been exhausted,'
-                          'the program will be closed')
+                    self.stdout.write('Attempts have been exhausted,'
+                          'the program will be closed\n')
                     raise SystemExit
 
         self.save_configuration(provider, *location)

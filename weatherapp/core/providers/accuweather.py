@@ -1,5 +1,6 @@
 import logging
 import re
+import sys
 from urllib.parse import quote
 
 from bs4 import BeautifulSoup
@@ -32,7 +33,8 @@ class AccuWeatherProvider(WeatherProvider):
         locations = self.get_accu_locations(config.ACCU_BROWSE_LOCATIONS)
         while locations:
             for index, location in enumerate(locations):
-                print(f'{index + 1}, {location[0]}')
+                self.stdout.write(f'{index + 1}. {location[0]} \n')
+            self.stdout.write('\n')
             for i in range(3, 0, -1):  # User input validation
                 try:
                     selected_index = int(input('Please select location: '))
@@ -40,13 +42,14 @@ class AccuWeatherProvider(WeatherProvider):
                     break
                 except (IndexError, ValueError) as ex:
                     self.logger.debug(ex)
-                    print('\nYou entered a wrong location\n'
+                    self.stdout.write('\nYou entered a wrong location\n'
                           'Depending on the choice of location enter a number'
-                          f' from 1 to {len(locations)}\n'
+
+                          f' from 1 to {len(locations)}\n\n'
                           f'You have {i - 1} attempts left.')
                     if not (i - 1):
-                        print('Attempts have been exhausted,'
-                              'the program will be closed')
+                        self.stdout.write('Attempts have been exhausted,'
+                              'the program will be closed\n\n')
                         raise SystemExit
 
             locations = self.get_accu_locations(location[1])

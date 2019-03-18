@@ -10,6 +10,6 @@ class Providers(Command):
     def run(self, argv):
         """ Run command.
         """
+        for provider in self.app.providermanager._commands:
+            self.stdout.write(f'{provider}\n')
 
-        for name in self.app.providermanager._commands:
-            print(name)

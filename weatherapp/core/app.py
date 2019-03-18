@@ -28,7 +28,7 @@ class App:
         self.providermanager = ProviderManager()
         self.commandmanager = CommandManager()
         self.formatters = self._load_formatters()
-
+         
     def _arg_parse(self):
         """ Initialize argument parser
         """
@@ -150,8 +150,8 @@ def main(argv=sys.argv[1:]):
         try:
             return App().run(argv)
         except Exception:
-            print('\nThe program can not continue to work '
-                  'due to a runtime error!\n')
+            sys.stdout.write('\nThe program can not continue to work '
+                  'due to a runtime error!\n\n')
             raise SystemExit
 
 
