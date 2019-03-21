@@ -24,7 +24,7 @@ ACCU_BROWSE_LOCATIONS = 'https://www.accuweather.com/uk/browse-locations'
 
 # rp5.ua provider related configuration
 RP5_PROVIDER_NAME = 'rp5'  # provider id
-RP5_PROVIDER_TITLE = 'rp5.ua'  # provider title
+RP5_PROVIDER_TITLE = 'RP5'  # provider title
 
 DEFAULT_RP5_LOCATION_NAME = 'Dnipro'
 DEFAULT_RP5_LOCATION_URL = (
