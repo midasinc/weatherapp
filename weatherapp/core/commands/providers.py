@@ -1,3 +1,5 @@
+"""Integration tests for the application"""
+
 from weatherapp.core.abstract import Command
 
 
@@ -11,5 +13,4 @@ class Providers(Command):
         """ Run command.
         """
         for name, provider in self.app.providermanager:
-            self.stdout.write(f'{provider.title}: {name}\n')
-
+            self.app.stdout.write(f'{provider.title}: {name}\n')
