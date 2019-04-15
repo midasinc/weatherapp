@@ -41,3 +41,7 @@ class AppTestCase(unittest.TestCase):
         self.assertEqual(parsed_args.formatter, 'table')
         self.assertTrue(parsed_args.refresh)
         self.assertEqual(parsed_args.verbose_level, 1)
+
+
+if __name__ == '__main__':
+    unittest.main()

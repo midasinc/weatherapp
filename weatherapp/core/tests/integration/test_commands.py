@@ -17,4 +17,7 @@ class CommandsTestCase(unittest.TestCase):
         App(stdout=stdout).run(['providers'])
         stdout.seek(0)
         self.assertEqual(stdout.read(), 'AccuWeather: accu\nRP5: rp5\n')
-        # self.assertEqual(stdout.read(), 'accu\nrp5\n')
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -21,12 +21,12 @@ class CommandManagerTestCase(unittest.TestCase):
     def test_add(self):
         """Test add method for command manager."""
 
-        messagerr = "Command 'any' is missing in command manager"
+        message = "Command 'any' is missing in command manager"
 
         self.assertTrue(
-            'any' in self.command_manager._commands, msg=messagerr)
+            'any' in self.command_manager._commands, msg=message)
         self.assertEqual(
-            self.command_manager.get('any'), AnyCommand, msg=messagerr)
+            self.command_manager.get('any'), AnyCommand, msg=message)
 
 
     def test_load_commands(self):
