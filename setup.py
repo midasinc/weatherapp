@@ -4,9 +4,7 @@ setup(
     name="weatherapp.core",
     version="0.1.0",
     author="Viacheslav Liash",
-    author_email="author@example.com",
     description="A simple cli weather aggregator",
-    long_descriptoin="",
     url = "https://github.com/midasinc/weatherapp.core",
     packages=find_namespace_packages(),
     entry_points={
