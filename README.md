@@ -1,7 +1,7 @@
 
 # Project "weatherapp.core"
 
-## About 
+## About
 The **weatherapp.core** application is an aggregator of weather sites and is designed to view weather conditions from various sources in a convenient form in one place.
 
 The following weather sites are currently supported:
@@ -20,7 +20,7 @@ The following weather sites are currently supported:
 2. The sample can be run on any operating system that supports Python 3.x, including recent versions of Windows, Linux, and Mac OS.
 3. Follow these steps to install the sample code on your computer:
 	- Download or clone the repository [weatherapp.core](https://github.com/midasinc/weatherapp.core) to your machine.
-	- Use the following command to locally install the package:
+	- Use the following command to locally install the package: \
 	     `$ pip install .`
  
  
@@ -30,41 +30,37 @@ The following weather sites are currently supported:
 
 #### Basic commands:
 
-* get weather conditions from all providers
+* get weather conditions from all providers \
 `$ wfapp`
 
-* get weather conditions from a specific provider
+* get weather conditions from a specific provider \
 `$ wfapp [provider id]`
 
-* run with update cache:
+* run with update cache: \
 `$ wfapp --refresh`
 or
 `$ wfapp [provider id] --refresh`
 
-* get a list of all providers:
-` $ wfapp providers`
+* get a list of all providers: \
+`$ wfapp providers`
 
-* select a location to get weather data from a specific provider:
+* select a location to get weather data from a specific provider: \
 `$ wfapp configurate [provider id]`
 
-***List [provider id]:***
-- `accu` - [AccuWeather](www.accuweather.com)
-- `rp5` - [RP5](rp5.ua)
-
+***List [provider id]:*** \
+`accu` - [AccuWeather](www.accuweather.com)\
+`rp5` - [RP5](rp5.ua)
 
 #### Optional commands:
 
-* for show traceback on errors:
+* for show traceback on errors: \
 `--debug`
 
-* for setting the login level of the program(default WARNING) INFO:
+* for setting the login level of the program(default WARNING) INFO: \
 `-v`
 
-* for setting the login level of the program(default WARNING) DEBUG:
-`-vv `
-
-
+* for setting the login level of the program(default WARNING) DEBUG: \
+`-vv`
 
 ## License
 The **weatherapp.core** is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT)
-
